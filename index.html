@@ -5,295 +5,367 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OneStream 365 — Excel Add-In</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body {
-    height: 100%;
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: #f3f3f3;
-    -webkit-font-smoothing: antialiased;
-    overflow: hidden;
+  :root{
+    --green:#227e4d;        /* title bar */
+    --accent:#217346;       /* Excel/OneStream accent green */
+    --chrome:#f6f5f3;       /* ribbon / bars background */
+    --chrome2:#f1f0ee;
+    --line:#d4d4d4;
+    --line-dk:#c0c0c0;
+    --grid:#dddddd;
+    --header:#e9e9e9;
+    --hdr-text:#5f5f5f;
+    --text:#444444;
+    --sel-fill:#caead9;
+    --font:"Segoe UI", Arial, sans-serif;
   }
-  /* Fills the browser and centers the scaled frame */
-  .stage {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:var(--font);
+    font-size:12px;
+    color:#000;
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+    background:#fff;
   }
-  /* Reserves the *scaled* footprint so centering stays correct */
-  .sizer {
-    width: calc(1440px * var(--s, 1));
-    height: calc(820px * var(--s, 1));
-  }
+  .app{display:flex;flex-direction:column;height:100vh;width:100vw;}
 
-  /* ---- Frame: 1440 x 820 (1:1 from Figma), scaled to fit ---- */
-  .frame {
-    position: relative;
-    width: 1440px;
-    height: 820px;
-    transform: scale(var(--s, 1));
-    transform-origin: top left;
-    background-image: url("assets/bg.png");
-    background-size: 1440px 820px;
-    background-repeat: no-repeat;
-    overflow: hidden;
-    font-family: "Segoe UI", Arial, sans-serif;
+  svg{display:block;}
+  .ico{fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;}
+
+  /* ============ TITLE BAR ============ */
+  .titlebar{
+    height:32px;flex:0 0 32px;background:var(--green);color:#fff;
+    display:flex;align-items:center;gap:2px;padding:0 2px 0 8px;font-size:12px;
   }
-
-  /* ---- OneStream Ribbon (Action Ribbon - Main) ---- */
-  .ribbon {
-    position: absolute;
-    left: 0;
-    top: 64px;
-    display: flex;
-    gap: 7px;
-    align-items: center;
+  .tb-btn{height:24px;min-width:26px;padding:0 5px;display:flex;align-items:center;justify-content:center;
+    gap:5px;border-radius:3px;color:#fff;cursor:default;}
+  .tb-btn:hover{background:rgba(255,255,255,.15);}
+  .autosave{gap:7px;padding:0 8px;font-size:12px;}
+  .toggle{width:30px;height:14px;border-radius:8px;background:rgba(255,255,255,.35);position:relative;}
+  .toggle::after{content:"";position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%;background:#fff;}
+  .tb-sep{width:1px;height:18px;background:rgba(255,255,255,.35);margin:0 4px;}
+  .tb-center{flex:1;display:flex;align-items:center;justify-content:center;gap:14px;min-width:0;}
+  .tb-title{white-space:nowrap;font-size:12px;}
+  .search{
+    flex:0 1 460px;height:22px;background:rgba(255,255,255,.18);border-radius:4px;
+    display:flex;align-items:center;gap:8px;padding:0 10px;color:#eafff2;font-size:12px;
   }
+  .tb-right{display:flex;align-items:center;gap:2px;}
+  .winbtn{width:44px;height:32px;display:flex;align-items:center;justify-content:center;color:#fff;}
+  .winbtn:hover{background:rgba(255,255,255,.15);}
+  .winbtn.close:hover{background:#e81123;}
 
-  .group        { display: flex; flex-direction: column; align-items: center; }
-  .group-solo   { display: flex; flex-direction: column; align-items: center;
-                  justify-content: space-between; height: 87px; }
-  .group-tall   { display: flex; flex-direction: column; align-items: center; height: 89px; }
-
-  .group-row       { display: flex; gap: 7px; align-items: center;  margin-bottom: -3px; }
-  .group-row.top   { align-items: flex-start; }
-
-  .item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    padding: 5px 0;
-    width: 60px;
+  /* ============ RIBBON TAB BAR ============ */
+  .tabbar{
+    height:30px;flex:0 0 30px;background:var(--chrome);display:flex;align-items:stretch;
+    padding-left:6px;font-size:12px;border-bottom:1px solid #eceae8;
   }
-  .icon {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .icon img { display: block; }
+  .tab{display:flex;align-items:center;padding:0 9px;color:#444;white-space:nowrap;cursor:default;
+    border-bottom:2px solid transparent;}
+  .tab:hover{background:#eceae8;}
+  .tab.active{color:var(--accent);font-weight:600;border-bottom:2px solid var(--accent);}
+  .tab.file{background:var(--accent);color:#fff;padding:0 14px;border-bottom:none;}
+  .tabbar-right{margin-left:auto;display:flex;align-items:center;gap:6px;padding:0 8px;}
+  .pill{display:flex;align-items:center;gap:6px;height:22px;padding:0 9px;border:1px solid #cfcdca;
+    border-radius:4px;color:#444;background:#fff;font-size:12px;}
+  .pill.share{color:var(--accent);border-color:#b7c9bf;}
 
-  .label {
-    width: 100%;
-    font-size: 9.5px;
-    line-height: normal;
-    color: #000;
-    text-align: center;
-    word-break: break-word;
+  /* ============ RIBBON STRIP ============ */
+  .ribbon-strip{
+    height:101px;flex:0 0 101px;background:var(--chrome);position:relative;
+    border-bottom:1px solid var(--line);overflow:hidden;
   }
-  .label.s9 { font-size: 9px; }
+  .ribbon{position:absolute;left:2px;top:5px;display:flex;gap:7px;align-items:center;}
+  .rib-collapse{position:absolute;right:8px;bottom:4px;color:#7a7a7a;}
 
-  .caret       { width: 8px; height: 5px; flex-shrink: 0; }
-  .caret img   { display: block; width: 8px; height: 5px; }
+  .group{display:flex;flex-direction:column;align-items:center;}
+  .group-solo{display:flex;flex-direction:column;align-items:center;justify-content:space-between;height:87px;}
+  .group-tall{display:flex;flex-direction:column;align-items:center;height:89px;}
+  .group-row{display:flex;gap:7px;align-items:center;margin-bottom:-3px;}
+  .group-row.top{align-items:flex-start;}
+  .item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 0;width:60px;}
+  .icon{width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .icon img{display:block;}
+  .label{width:100%;font-size:9.5px;line-height:normal;color:#000;text-align:center;word-break:break-word;}
+  .label.s9{font-size:9px;}
+  .caret{width:8px;height:5px;flex-shrink:0;}
+  .caret img{display:block;width:8px;height:5px;}
+  .caption{font-size:10px;line-height:normal;color:#000;text-align:center;white-space:nowrap;}
+  .caption.spacer{opacity:0;width:60px;white-space:normal;}
+  .sep{width:1px;height:91px;background:var(--line);flex-shrink:0;}
 
-  .caption {
-    font-size: 10px;
-    line-height: normal;
-    color: #000;
-    text-align: center;
-    white-space: nowrap;
-  }
-  .caption.spacer { opacity: 0; width: 60px; white-space: normal; }
+  /* ============ FORMULA BAR ============ */
+  .formulabar{height:24px;flex:0 0 24px;display:flex;align-items:stretch;background:#fff;
+    border-bottom:1px solid #d2d2d2;font-size:12px;color:#333;}
+  .namebox{width:130px;display:flex;align-items:center;padding:0 8px;border-right:1px solid #e2e2e2;}
+  .namebox .nb{flex:1;}
+  .namebox .nb-caret{color:#888;}
+  .fx-group{display:flex;align-items:center;gap:12px;padding:0 10px;border-right:1px solid #e2e2e2;color:#9a9a9a;}
+  .fx{font-style:italic;color:#7a7a7a;}
+  .formula-input{flex:1;display:flex;align-items:center;padding:0 10px;color:#000;}
 
-  .sep { width: 1px; height: 91px; background: #D4D4D4; flex-shrink: 0; }
+  /* ============ WORKSHEET (grid + task pane) ============ */
+  .worksheet{flex:1;display:flex;min-height:0;}
+  .grid-wrap{flex:1;overflow:auto;position:relative;background:#fff;min-width:0;}
+  .grid{display:grid;grid-auto-rows:19px;width:max-content;background:#fff;}
+  .c{height:19px;border-right:1px solid var(--grid);border-bottom:1px solid var(--grid);
+    display:flex;align-items:center;font-size:11px;box-sizing:border-box;}
+  .colhead{height:20px;position:sticky;top:0;z-index:2;background:var(--header);color:var(--hdr-text);
+    justify-content:center;border-right:1px solid var(--line);border-bottom:1px solid var(--line-dk);}
+  .rowhead{position:sticky;left:0;z-index:1;background:var(--header);color:var(--hdr-text);
+    justify-content:center;border-right:1px solid var(--line-dk);border-bottom:1px solid var(--grid);}
+  .corner{position:sticky;top:0;left:0;z-index:3;background:var(--header);
+    border-right:1px solid var(--line-dk);border-bottom:1px solid var(--line-dk);overflow:hidden;}
+  .corner::after{content:"";position:absolute;right:2px;bottom:2px;width:0;height:0;
+    border-left:6px solid transparent;border-bottom:6px solid #a6a6a6;}
+  .colhead.sel{background:var(--sel-fill);color:#0e5c37;border-bottom:2px solid var(--accent);}
+  .rowhead.sel{background:var(--sel-fill);color:#0e5c37;border-right:2px solid var(--accent);}
+  .c.a1{box-shadow:inset 0 0 0 2px var(--accent);position:relative;z-index:1;}
+  .c.a1::after{content:"";position:absolute;right:-3px;bottom:-3px;width:5px;height:5px;
+    background:var(--accent);border:1px solid #fff;}
 
-  /* ---- Task pane overlay ---- */
-  .pane-title {
-    position: absolute;
-    left: 1130px;
-    top: 217px;
-    font-size: 18px;
-    line-height: normal;
-    color: #000;
-    white-space: nowrap;
-  }
-  .pane-body {
-    position: absolute;
-    left: 1130px;
-    top: 246px;
-    width: 296px;
-    height: 540px;
-    background: #ffffff;
-  }
+  /* ============ TASK PANE ============ */
+  .taskpane{flex:0 0 300px;background:#fff;border-left:1px solid var(--line);display:flex;flex-direction:column;}
+  .pane-head{height:38px;flex:0 0 38px;display:flex;align-items:center;padding:0 6px 0 14px;gap:4px;
+    border-bottom:1px solid #ececec;}
+  .pane-title{flex:1;font-size:16px;color:#000;}
+  .pane-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:#5a5a5a;border-radius:3px;}
+  .pane-btn:hover{background:#f0f0f0;}
+  .pane-body{flex:1;background:#fff;}
+
+  /* ============ SHEET TAB BAR ============ */
+  .sheetbar{height:26px;flex:0 0 26px;background:var(--chrome);display:flex;align-items:center;
+    gap:2px;padding:0 6px;border-top:1px solid #e6e4e2;color:#5a5a5a;font-size:12px;}
+  .sheetnav{display:flex;align-items:center;gap:10px;padding:0 8px 0 4px;color:#8a8a8a;}
+  .sheet-tab{display:flex;align-items:center;height:26px;padding:0 12px;color:#000;
+    border-bottom:2px solid var(--accent);font-weight:600;background:#fff;}
+  .sheet-add{width:26px;height:26px;display:flex;align-items:center;justify-content:center;color:#7a7a7a;}
+  .sheetbar-scroll{flex:1;}
+
+  /* ============ STATUS BAR ============ */
+  .statusbar{height:23px;flex:0 0 23px;background:var(--chrome);display:flex;align-items:center;
+    padding:0 10px;font-size:11.5px;color:var(--text);border-top:1px solid #e6e4e2;gap:18px;}
+  .sb-left{display:flex;align-items:center;gap:18px;}
+  .sb-item{display:flex;align-items:center;gap:6px;}
+  .sb-right{margin-left:auto;display:flex;align-items:center;gap:14px;}
+  .view-icons{display:flex;align-items:center;gap:4px;color:#5a5a5a;}
+  .view-icons .vi{width:22px;height:18px;display:flex;align-items:center;justify-content:center;border-radius:2px;}
+  .view-icons .vi.active{background:#dcdad8;}
+  .zoom{display:flex;align-items:center;gap:9px;}
+  .zoom-track{width:80px;height:2px;background:#c4c2c0;position:relative;}
+  .zoom-track::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:9px;height:9px;border-radius:50%;background:#8a8a8a;}
 </style>
 </head>
 <body>
-  <div class="stage">
-   <div class="sizer">
-    <div class="frame">
+<div class="app">
 
-      <!-- ============ OneStream Ribbon ============ -->
-      <div class="ribbon">
-
-        <!-- Access -->
-        <div class="group">
-          <div class="group-row">
-            <div class="item">
-              <div class="icon"><img src="assets/icons/login.svg" width="24" height="24" alt=""></div>
-              <div class="label">Log<br>In</div>
-              <div class="caret"></div>
-            </div>
-            <div class="item">
-              <div class="icon"><img src="assets/icons/logout.svg" width="23" height="24" alt=""></div>
-              <div class="label">Log<br>Out</div>
-              <div class="caret"></div>
-            </div>
-            <div class="item">
-              <div class="icon"><img src="assets/icons/changeapp.svg" width="24" height="24" alt=""></div>
-              <div class="label">Change<br>Application</div>
-              <div class="caret"></div>
-            </div>
-          </div>
-          <div class="caption">Access</div>
-        </div>
-
-        <div class="sep"></div>
-
-        <!-- Add Artifact -->
-        <div class="group-solo">
-          <div class="item">
-            <div class="icon"><img src="assets/icons/addartifact.svg" width="20.8" height="20.8" alt=""></div>
-            <div class="label">Add<br>Artifact</div>
-            <div class="caret"><img src="assets/icons/arrow_b.svg" alt=""></div>
-          </div>
-          <div class="caption spacer">Explore</div>
-        </div>
-
-        <div class="sep"></div>
-
-        <!-- Refresh -->
-        <div class="group-solo">
-          <div class="item">
-            <div class="icon"><img src="assets/icons/refresh.svg" width="24" height="18.75" alt=""></div>
-            <div class="label">Refresh</div>
-            <div class="caret"><img src="assets/icons/arrow_b.svg" alt=""></div>
-          </div>
-          <div class="caption spacer">Refresh</div>
-        </div>
-
-        <div class="sep"></div>
-
-        <!-- Submit -->
-        <div class="group-solo">
-          <div class="item">
-            <div class="icon"><img src="assets/icons/submit.svg" width="24" height="24" alt=""></div>
-            <div class="label">Submit</div>
-            <div class="caret"><img src="assets/icons/arrow_b.svg" alt=""></div>
-          </div>
-          <div class="caption spacer">Submit</div>
-        </div>
-
-        <div class="sep"></div>
-
-        <!-- Calculation -->
-        <div class="group-solo">
-          <div class="item">
-            <div class="icon"><img src="assets/icons/calculation.svg" width="24" height="24" alt=""></div>
-            <div class="label">Calculation</div>
-            <div class="caret"><img src="assets/icons/arrow_b.svg" alt=""></div>
-          </div>
-          <div class="caption spacer">Submit</div>
-        </div>
-
-        <div class="sep"></div>
-
-        <!-- Analysis -->
-        <div class="group-tall">
-          <div class="group-row top">
-            <div class="item">
-              <div class="icon"><img src="assets/icons/analysis.svg" width="24" height="24" alt=""></div>
-              <div class="label">Analysis</div>
-              <div class="caret"></div>
-            </div>
-            <div class="item">
-              <div class="icon"><img src="assets/icons/copypov.svg" width="24" height="24" alt=""></div>
-              <div class="label s9">Copy POV From Data Cell</div>
-              <div class="caret"></div>
-            </div>
-            <div class="item">
-              <div class="icon"><img src="assets/icons/pastepov.svg" width="24" height="24" alt=""></div>
-              <div class="label s9">Paste POV as XFGetCell</div>
-              <div class="caret"></div>
-            </div>
-          </div>
-          <div class="caption">Analysis</div>
-        </div>
-
-        <div class="sep"></div>
-
-        <!-- General -->
-        <div class="group-tall">
-          <div class="group-row top">
-            <div class="item">
-              <div class="icon"><img src="assets/icons/parameters.svg" width="24" height="24" alt=""></div>
-              <div class="label">Parameters</div>
-              <div class="caret"></div>
-            </div>
-            <div class="item">
-              <div class="icon"><img src="assets/icons/insheet.svg" width="23.9" height="23.9" alt=""></div>
-              <div class="label s9">In-Sheet Actions</div>
-              <div class="caret"></div>
-            </div>
-            <div class="item">
-              <div class="icon"><img src="assets/icons/taskactivity.svg" width="24" height="24" alt=""></div>
-              <div class="label s9">Task Activity</div>
-              <div class="caret"></div>
-            </div>
-          </div>
-          <div class="caption">Genera;</div>
-        </div>
-
-        <div class="sep"></div>
-
-        <!-- Show Pane -->
-        <div class="group-solo">
-          <div class="item">
-            <div class="icon"><img src="assets/icons/showpane.svg" width="19.2" height="19.2" alt=""></div>
-            <div class="label">Show Pane</div>
-            <div class="caret"></div>
-          </div>
-          <div class="caption spacer">Pane</div>
-        </div>
-
-        <div class="sep"></div>
-
-        <!-- Preferences -->
-        <div class="group-solo">
-          <div class="item">
-            <div class="icon"><img src="assets/icons/preferences.svg" width="23" height="24" alt=""></div>
-            <div class="label">Preferences</div>
-            <div class="caret"></div>
-          </div>
-          <div class="caption spacer">Explore</div>
-        </div>
-
-      </div>
-      <!-- ============ /Ribbon ============ -->
-
-      <!-- Task pane -->
-      <div class="pane-body"></div>
-      <div class="pane-title">OneStream 365</div>
-
+  <!-- ===================== TITLE BAR ===================== -->
+  <div class="titlebar">
+    <div class="tb-btn autosave">
+      <span>AutoSave</span><span class="toggle"></span><span>Off</span>
     </div>
-   </div>
+    <div class="tb-btn" title="Save">
+      <svg width="15" height="15" viewBox="0 0 16 16"><path class="ico" d="M3 2.5h7.5L13 5v8.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5Z"/><path class="ico" d="M5 2.5v3h5v-3M5.5 9.5h5v4h-5z"/></svg>
+    </div>
+    <div class="tb-btn" title="Undo">
+      <svg width="15" height="15" viewBox="0 0 16 16"><path class="ico" d="M4 6.5H10a3 3 0 0 1 0 6H6"/><path class="ico" d="M6 3.5 3 6.5l3 3"/></svg>
+    </div>
+    <div class="tb-btn" title="Redo">
+      <svg width="15" height="15" viewBox="0 0 16 16"><path class="ico" d="M12 6.5H6a3 3 0 0 0 0 6h4"/><path class="ico" d="M10 3.5l3 3-3 3"/></svg>
+    </div>
+    <div class="tb-btn" title="More"><svg width="13" height="13" viewBox="0 0 16 16"><path class="ico" d="M4 6l4 4 4-4"/></svg></div>
+
+    <div class="tb-center">
+      <span class="tb-title">Book1 - Excel</span>
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 16 16" style="color:#eafff2"><circle class="ico" cx="7" cy="7" r="4.2"/><path class="ico" d="M10.2 10.2 13.5 13.5"/></svg>
+        <span>Search</span>
+      </div>
+    </div>
+
+    <div class="tb-right">
+      <div class="tb-btn" title="Account"><svg width="16" height="16" viewBox="0 0 16 16"><circle class="ico" cx="8" cy="6" r="2.6"/><path class="ico" d="M3.2 13a4.8 4.8 0 0 1 9.6 0"/></svg></div>
+      <div class="winbtn" title="Ribbon Display Options"><svg width="15" height="12" viewBox="0 0 16 13"><rect class="ico" x="1.5" y="1.5" width="13" height="10" rx="1.5"/><path class="ico" d="M1.5 4.5h13"/></svg></div>
+      <div class="winbtn" title="Minimize"><svg width="12" height="12" viewBox="0 0 12 12"><path class="ico" d="M2 6.5h8"/></svg></div>
+      <div class="winbtn" title="Restore"><svg width="12" height="12" viewBox="0 0 12 12"><rect class="ico" x="2.5" y="3.5" width="6" height="6"/><path class="ico" d="M4.5 3.5V2.5h6v6h-1"/></svg></div>
+      <div class="winbtn close" title="Close"><svg width="12" height="12" viewBox="0 0 12 12"><path class="ico" d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></div>
+    </div>
   </div>
 
-  <script>
-    // Scale the 1440x820 frame to fit the browser while preserving aspect ratio
-    (function () {
-      var BASE_W = 1440, BASE_H = 820;
-      function fit() {
-        var s = Math.min(window.innerWidth / BASE_W, window.innerHeight / BASE_H);
-        document.documentElement.style.setProperty('--s', s);
-      }
-      window.addEventListener('resize', fit);
-      window.addEventListener('orientationchange', fit);
-      fit();
-    })();
-  </script>
+  <!-- ===================== TAB BAR ===================== -->
+  <div class="tabbar">
+    <div class="tab file">File</div>
+    <div class="tab">Home</div>
+    <div class="tab">Insert</div>
+    <div class="tab">Page Layout</div>
+    <div class="tab">Formulas</div>
+    <div class="tab">Data</div>
+    <div class="tab">Review</div>
+    <div class="tab">View</div>
+    <div class="tab">Automate</div>
+    <div class="tab">Help</div>
+    <div class="tab active">OneStream 365</div>
+    <div class="tabbar-right">
+      <div class="pill"><svg width="14" height="14" viewBox="0 0 16 16" style="color:#444"><path class="ico" d="M2.5 3.5h11v7h-6l-3 2.5v-2.5h-2z"/></svg>Comments</div>
+      <div class="pill share"><svg width="14" height="14" viewBox="0 0 16 16" style="color:#217346"><path class="ico" d="M8 10.5V2.5M5 5l3-3 3 3"/><path class="ico" d="M3.5 8v5.5h9V8"/></svg>Share <svg width="9" height="9" viewBox="0 0 12 12" style="color:#217346"><path class="ico" d="M3 4.5 6 7.5l3-3"/></svg></div>
+    </div>
+  </div>
+
+  <!-- ===================== RIBBON STRIP ===================== -->
+  <div class="ribbon-strip">
+    <div class="ribbon">
+      <!-- Access -->
+      <div class="group">
+        <div class="group-row">
+          <div class="item"><div class="icon"><img src="assets/icons/login.svg" width="24" height="24" alt=""></div><div class="label">Log<br>In</div><div class="caret"></div></div>
+          <div class="item"><div class="icon"><img src="assets/icons/logout.svg" width="23" height="24" alt=""></div><div class="label">Log<br>Out</div><div class="caret"></div></div>
+          <div class="item"><div class="icon"><img src="assets/icons/changeapp.svg" width="24" height="24" alt=""></div><div class="label">Change<br>Application</div><div class="caret"></div></div>
+        </div>
+        <div class="caption">Access</div>
+      </div>
+      <div class="sep"></div>
+      <!-- Add Artifact -->
+      <div class="group-solo">
+        <div class="item"><div class="icon"><img src="assets/icons/addartifact.svg" width="20.8" height="20.8" alt=""></div><div class="label">Add<br>Artifact</div><div class="caret"><img src="assets/icons/arrow_b.svg" alt=""></div></div>
+        <div class="caption spacer">Explore</div>
+      </div>
+      <div class="sep"></div>
+      <!-- Refresh -->
+      <div class="group-solo">
+        <div class="item"><div class="icon"><img src="assets/icons/refresh.svg" width="24" height="18.75" alt=""></div><div class="label">Refresh</div><div class="caret"><img src="assets/icons/arrow_b.svg" alt=""></div></div>
+        <div class="caption spacer">Refresh</div>
+      </div>
+      <div class="sep"></div>
+      <!-- Submit -->
+      <div class="group-solo">
+        <div class="item"><div class="icon"><img src="assets/icons/submit.svg" width="24" height="24" alt=""></div><div class="label">Submit</div><div class="caret"><img src="assets/icons/arrow_b.svg" alt=""></div></div>
+        <div class="caption spacer">Submit</div>
+      </div>
+      <div class="sep"></div>
+      <!-- Calculation -->
+      <div class="group-solo">
+        <div class="item"><div class="icon"><img src="assets/icons/calculation.svg" width="24" height="24" alt=""></div><div class="label">Calculation</div><div class="caret"><img src="assets/icons/arrow_b.svg" alt=""></div></div>
+        <div class="caption spacer">Submit</div>
+      </div>
+      <div class="sep"></div>
+      <!-- Analysis -->
+      <div class="group-tall">
+        <div class="group-row top">
+          <div class="item"><div class="icon"><img src="assets/icons/analysis.svg" width="24" height="24" alt=""></div><div class="label">Analysis</div><div class="caret"></div></div>
+          <div class="item"><div class="icon"><img src="assets/icons/copypov.svg" width="24" height="24" alt=""></div><div class="label s9">Copy POV From Data Cell</div><div class="caret"></div></div>
+          <div class="item"><div class="icon"><img src="assets/icons/pastepov.svg" width="24" height="24" alt=""></div><div class="label s9">Paste POV as XFGetCell</div><div class="caret"></div></div>
+        </div>
+        <div class="caption">Analysis</div>
+      </div>
+      <div class="sep"></div>
+      <!-- General -->
+      <div class="group-tall">
+        <div class="group-row top">
+          <div class="item"><div class="icon"><img src="assets/icons/parameters.svg" width="24" height="24" alt=""></div><div class="label">Parameters</div><div class="caret"></div></div>
+          <div class="item"><div class="icon"><img src="assets/icons/insheet.svg" width="23.9" height="23.9" alt=""></div><div class="label s9">In-Sheet Actions</div><div class="caret"></div></div>
+          <div class="item"><div class="icon"><img src="assets/icons/taskactivity.svg" width="24" height="24" alt=""></div><div class="label s9">Task Activity</div><div class="caret"></div></div>
+        </div>
+        <div class="caption">Genera;</div>
+      </div>
+      <div class="sep"></div>
+      <!-- Show Pane -->
+      <div class="group-solo">
+        <div class="item"><div class="icon"><img src="assets/icons/showpane.svg" width="19.2" height="19.2" alt=""></div><div class="label">Show Pane</div><div class="caret"></div></div>
+        <div class="caption spacer">Pane</div>
+      </div>
+      <div class="sep"></div>
+      <!-- Preferences -->
+      <div class="group-solo">
+        <div class="item"><div class="icon"><img src="assets/icons/preferences.svg" width="23" height="24" alt=""></div><div class="label">Preferences</div><div class="caret"></div></div>
+        <div class="caption spacer">Explore</div>
+      </div>
+    </div>
+    <div class="rib-collapse" title="Collapse the Ribbon"><svg width="14" height="9" viewBox="0 0 14 9"><path class="ico" d="M1 6.5 7 1.5l6 5"/></svg></div>
+  </div>
+
+  <!-- ===================== FORMULA BAR ===================== -->
+  <div class="formulabar">
+    <div class="namebox"><span class="nb">A1</span><span class="nb-caret"><svg width="9" height="9" viewBox="0 0 12 12"><path class="ico" d="M3 4.5 6 7.5l3-3"/></svg></span></div>
+    <div class="fx-group">
+      <span>&#10005;</span><span>&#10003;</span><span class="fx">fx</span>
+    </div>
+    <div class="formula-input"></div>
+  </div>
+
+  <!-- ===================== WORKSHEET ===================== -->
+  <div class="worksheet">
+    <div class="grid-wrap" id="gridwrap">
+      <div class="grid" id="grid"></div>
+    </div>
+    <div class="taskpane">
+      <div class="pane-head">
+        <div class="pane-title">OneStream 365</div>
+        <div class="pane-btn" title="Collapse"><svg width="14" height="14" viewBox="0 0 14 14"><path class="ico" d="M3 5.5 7 9.5l4-4"/></svg></div>
+        <div class="pane-btn" title="Close"><svg width="13" height="13" viewBox="0 0 12 12"><path class="ico" d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg></div>
+      </div>
+      <div class="pane-body"></div>
+    </div>
+  </div>
+
+  <!-- ===================== SHEET TAB BAR ===================== -->
+  <div class="sheetbar">
+    <div class="sheetnav">
+      <svg width="11" height="11" viewBox="0 0 12 12"><path class="ico" d="M7.5 2.5 3.5 6l4 3.5"/></svg>
+      <svg width="11" height="11" viewBox="0 0 12 12"><path class="ico" d="M4.5 2.5 8.5 6l-4 3.5"/></svg>
+    </div>
+    <div class="sheet-tab">Sheet1</div>
+    <div class="sheet-add" title="New sheet"><svg width="13" height="13" viewBox="0 0 14 14"><path class="ico" d="M7 3v8M3 7h8"/></svg></div>
+    <div class="sheetbar-scroll"></div>
+  </div>
+
+  <!-- ===================== STATUS BAR ===================== -->
+  <div class="statusbar">
+    <div class="sb-left">
+      <span>Ready</span>
+      <span class="sb-item"><svg width="13" height="13" viewBox="0 0 14 14" style="color:#5a5a5a"><circle class="ico" cx="7" cy="7" r="5.2"/><path class="ico" d="M7 4.3v.2M7 6.2v3.5"/></svg>Accessibility: Good to go</span>
+    </div>
+    <div class="sb-right">
+      <span class="sb-item"><svg width="14" height="14" viewBox="0 0 16 16" style="color:#5a5a5a"><path class="ico" d="M2.5 12.5V9M6 12.5V4M9.5 12.5V7M13 12.5V3"/></svg>Display Settings</span>
+      <div class="view-icons">
+        <span class="vi active" title="Normal"><svg width="15" height="13" viewBox="0 0 16 14"><rect class="ico" x="1.5" y="1.5" width="13" height="11"/><path class="ico" d="M1.5 4.5h13M5 4.5v8"/></svg></span>
+        <span class="vi" title="Page Layout"><svg width="15" height="13" viewBox="0 0 16 14"><rect class="ico" x="2.5" y="1.5" width="11" height="11"/><path class="ico" d="M2.5 4h11"/></svg></span>
+        <span class="vi" title="Page Break Preview"><svg width="15" height="13" viewBox="0 0 16 14"><rect class="ico" x="1.5" y="1.5" width="13" height="11"/><path class="ico" d="M8 1.5v11" stroke-dasharray="2 1.5"/></svg></span>
+      </div>
+      <div class="zoom">
+        <span>&minus;</span>
+        <div class="zoom-track"></div>
+        <span>+</span>
+        <span style="min-width:34px;text-align:right;">100%</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Build the worksheet grid to fill available space; regenerate on resize.
+  var COLW = 64, ROWH = 19, RHW = 26;
+  function colName(n){ var s=''; n++; while(n>0){ n--; s=String.fromCharCode(65+n%26)+s; n=Math.floor(n/26);} return s; }
+  function buildGrid(){
+    var wrap = document.getElementById('gridwrap');
+    var grid = document.getElementById('grid');
+    var cols = Math.max(20, Math.ceil(wrap.clientWidth / COLW) + 2);
+    var rows = Math.max(40, Math.ceil(wrap.clientHeight / ROWH) + 4);
+    grid.style.gridTemplateColumns = RHW + 'px repeat(' + cols + ', ' + COLW + 'px)';
+    var h = '<div class="c corner"></div>';
+    for (var c = 0; c < cols; c++) h += '<div class="c colhead' + (c===0?' sel':'') + '">' + colName(c) + '</div>';
+    for (var r = 0; r < rows; r++){
+      h += '<div class="c rowhead' + (r===0?' sel':'') + '">' + (r+1) + '</div>';
+      for (var c2 = 0; c2 < cols; c2++) h += '<div class="c' + (r===0&&c2===0?' a1':'') + '"></div>';
+    }
+    grid.innerHTML = h;
+  }
+  var t;
+  window.addEventListener('resize', function(){ clearTimeout(t); t = setTimeout(buildGrid, 80); });
+  buildGrid();
+</script>
 </body>
 </html>
