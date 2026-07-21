@@ -7,4 +7,10 @@ built from Figma (`Excel Add-In`, node `10331:10627`).
 - `assets/bg.png` — Excel chrome (1440×820).
 - `assets/icons/*.svg` — exact ribbon icons exported from Figma.
 
-Live via GitHub Pages / static host.
+Live on Vercel (auto-deploys on every push to `main`).
+
+## Auto-deploy
+
+Any change to this folder is automatically committed and pushed to `main` at the
+end of each Claude Code turn via a **Stop hook** (`.claude/o365-autodeploy.sh`),
+which triggers a Vercel redeploy. No manual commit/push needed.
