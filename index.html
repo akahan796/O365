@@ -77,24 +77,36 @@
     height:101px;flex:0 0 101px;background:var(--chrome);position:relative;
     border-bottom:1px solid var(--line);overflow:hidden;
   }
-  .ribbon{position:absolute;left:2px;top:5px;display:flex;gap:7px;align-items:center;}
+  .ribbon{position:absolute;left:4px;top:2px;display:flex;align-items:stretch;height:95px;}
   .rib-collapse{position:absolute;right:8px;bottom:4px;color:#7a7a7a;}
 
-  .group{display:flex;flex-direction:column;align-items:center;}
-  .group-solo{display:flex;flex-direction:column;align-items:center;justify-content:space-between;height:87px;}
-  .group-tall{display:flex;flex-direction:column;align-items:center;height:89px;}
-  .group-row{display:flex;gap:7px;align-items:center;margin-bottom:-3px;}
-  .group-row.top{align-items:flex-start;}
-  .item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 0;width:60px;}
-  .icon{width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .icon img{display:block;}
-  .label{width:100%;font-size:9.5px;line-height:normal;color:#000;text-align:center;word-break:break-word;}
-  .label.s9{font-size:9px;}
-  .caret{width:8px;height:5px;flex-shrink:0;}
-  .caret img{display:block;width:8px;height:5px;}
-  .caption{font-size:10px;line-height:normal;color:#000;text-align:center;white-space:nowrap;}
-  .caption.spacer{opacity:0;width:60px;white-space:normal;}
-  .sep{width:1px;height:91px;background:var(--line);flex-shrink:0;}
+  /* group = vertically-centered body + caption underneath */
+  .group{display:flex;flex-direction:column;align-items:center;padding:0 5px;}
+  .group-body{flex:1;display:flex;align-items:center;gap:1px;}
+  .caption{font-size:11px;line-height:14px;color:#7c7c7c;text-align:center;
+    white-space:nowrap;padding:3px 4px 5px;}
+  .sep{width:1px;align-self:stretch;background:var(--line);margin:5px 3px;flex-shrink:0;}
+
+  /* large button: icon on top, label below, optional caret */
+  .item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 3px;
+    width:66px;border-radius:3px;cursor:default;align-self:stretch;justify-content:center;}
+  .item:hover{background:#e9e9f1;}
+  .item.disabled{opacity:.38;}
+  .icon{width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .icon img{display:block;width:24px;height:24px;}
+  .label{width:100%;font-size:11px;line-height:12px;color:#1a1a1a;text-align:center;
+    overflow-wrap:break-word;word-break:normal;}
+  .caret{color:#5a5a5a;height:6px;display:flex;align-items:center;justify-content:center;}
+  .caret svg{display:block;}
+
+  /* small list button: icon left + single-line text right */
+  .list-cols{display:flex;align-items:center;gap:0;align-self:stretch;}
+  .list-col{display:flex;flex-direction:column;justify-content:center;gap:1px;align-self:center;}
+  .list-item{display:flex;align-items:center;gap:7px;padding:3px 8px 3px 5px;
+    border-radius:3px;cursor:default;white-space:nowrap;}
+  .list-item:hover{background:#e9e9f1;}
+  .list-item img{width:16px;height:16px;display:block;flex-shrink:0;}
+  .list-item span{font-size:11px;line-height:14px;color:#1a1a1a;}
 
   /* ============ FORMULA BAR ============ */
   .formulabar{height:24px;flex:0 0 24px;display:flex;align-items:stretch;background:#fff;
@@ -219,68 +231,84 @@
     <div class="ribbon">
       <!-- Access -->
       <div class="group">
-        <div class="group-row">
-          <div class="item"><div class="icon"><img src="assets/icons/login.svg" width="24" height="24" alt=""></div><div class="label">Log<br>In</div><div class="caret"></div></div>
-          <div class="item"><div class="icon"><img src="assets/icons/logout.svg" width="23" height="24" alt=""></div><div class="label">Log<br>Out</div><div class="caret"></div></div>
-          <div class="item"><div class="icon"><img src="assets/icons/changeapp.svg" width="24" height="24" alt=""></div><div class="label">Change<br>Application</div><div class="caret"></div></div>
+        <div class="group-body">
+          <div class="item disabled"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Log In</div></div>
+          <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Log Out</div></div>
+          <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Change Application</div></div>
         </div>
         <div class="caption">Access</div>
       </div>
       <div class="sep"></div>
-      <!-- Add Artifact -->
-      <div class="group-solo">
-        <div class="item"><div class="icon"><img src="assets/icons/addartifact.svg" width="20.8" height="20.8" alt=""></div><div class="label">Add<br>Artifact</div><div class="caret"><img src="assets/icons/arrow_b.svg" alt=""></div></div>
-        <div class="caption spacer">Explore</div>
+      <!-- Explore -->
+      <div class="group">
+        <div class="group-body">
+          <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Cube View</div></div>
+          <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Quick View</div></div>
+          <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Table View</div></div>
+        </div>
+        <div class="caption">Explore</div>
       </div>
       <div class="sep"></div>
-      <!-- Refresh -->
-      <div class="group-solo">
-        <div class="item"><div class="icon"><img src="assets/icons/refresh.svg" width="24" height="18.75" alt=""></div><div class="label">Refresh</div><div class="caret"><img src="assets/icons/arrow_b.svg" alt=""></div></div>
-        <div class="caption spacer">Refresh</div>
+      <!-- Data -->
+      <div class="group">
+        <div class="group-body">
+          <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Refresh</div><div class="caret"><svg width="9" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Calculation</div><div class="caret"><svg width="9" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Submit</div><div class="caret"><svg width="9" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+        </div>
+        <div class="caption">Data</div>
       </div>
       <div class="sep"></div>
-      <!-- Submit -->
-      <div class="group-solo">
-        <div class="item"><div class="icon"><img src="assets/icons/submit.svg" width="24" height="24" alt=""></div><div class="label">Submit</div><div class="caret"><img src="assets/icons/arrow_b.svg" alt=""></div></div>
-        <div class="caption spacer">Submit</div>
-      </div>
-      <div class="sep"></div>
-      <!-- Calculation -->
-      <div class="group-solo">
-        <div class="item"><div class="icon"><img src="assets/icons/calculation.svg" width="24" height="24" alt=""></div><div class="label">Calculation</div><div class="caret"><img src="assets/icons/arrow_b.svg" alt=""></div></div>
-        <div class="caption spacer">Submit</div>
-      </div>
-      <div class="sep"></div>
-      <!-- Analysis -->
-      <div class="group-tall">
-        <div class="group-row top">
-          <div class="item"><div class="icon"><img src="assets/icons/analysis.svg" width="24" height="24" alt=""></div><div class="label">Analysis</div><div class="caret"></div></div>
-          <div class="item"><div class="icon"><img src="assets/icons/copypov.svg" width="24" height="24" alt=""></div><div class="label s9">Copy POV From Data Cell</div><div class="caret"></div></div>
-          <div class="item"><div class="icon"><img src="assets/icons/pastepov.svg" width="24" height="24" alt=""></div><div class="label s9">Paste POV as XFGetCell</div><div class="caret"></div></div>
+      <!-- Analysis (2-column list) -->
+      <div class="group">
+        <div class="group-body">
+          <div class="list-cols">
+            <div class="list-col">
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Copy POV from Data Cell</span></div>
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Paste POV as XFGetCell</span></div>
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Create Quick View from Data Cell</span></div>
+            </div>
+            <div class="list-col">
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Drill Down</span></div>
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Convert to XFGetCells</span></div>
+            </div>
+          </div>
         </div>
         <div class="caption">Analysis</div>
       </div>
       <div class="sep"></div>
-      <!-- General -->
-      <div class="group-tall">
-        <div class="group-row top">
-          <div class="item"><div class="icon"><img src="assets/icons/parameters.svg" width="24" height="24" alt=""></div><div class="label">Parameters</div><div class="caret"></div></div>
-          <div class="item"><div class="icon"><img src="assets/icons/insheet.svg" width="23.9" height="23.9" alt=""></div><div class="label s9">In-Sheet Actions</div><div class="caret"></div></div>
-          <div class="item"><div class="icon"><img src="assets/icons/taskactivity.svg" width="24" height="24" alt=""></div><div class="label s9">Task Activity</div><div class="caret"></div></div>
+      <!-- File Operations (1-column list) -->
+      <div class="group">
+        <div class="group-body">
+          <div class="list-col">
+            <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>File Explorer</span></div>
+            <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Save to Server</span></div>
+            <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Save Offline Copy</span></div>
+          </div>
         </div>
-        <div class="caption">Genera;</div>
+        <div class="caption">File Operations</div>
       </div>
       <div class="sep"></div>
-      <!-- Show Pane -->
-      <div class="group-solo">
-        <div class="item"><div class="icon"><img src="assets/icons/showpane.svg" width="19.2" height="19.2" alt=""></div><div class="label">Show Pane</div><div class="caret"></div></div>
-        <div class="caption spacer">Pane</div>
+      <!-- General -->
+      <div class="group">
+        <div class="group-body">
+          <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Parameters</div></div>
+          <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">In-Sheet Actions</div></div>
+          <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Preferences</div></div>
+          <div class="list-col">
+            <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Select Member</span></div>
+            <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Task Activity</span></div>
+          </div>
+        </div>
+        <div class="caption">General</div>
       </div>
       <div class="sep"></div>
-      <!-- Preferences -->
-      <div class="group-solo">
-        <div class="item"><div class="icon"><img src="assets/icons/preferences.svg" width="23" height="24" alt=""></div><div class="label">Preferences</div><div class="caret"></div></div>
-        <div class="caption spacer">Explore</div>
+      <!-- Pane -->
+      <div class="group">
+        <div class="group-body">
+          <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Show</div></div>
+        </div>
+        <div class="caption">Pane</div>
       </div>
     </div>
     <div class="rib-collapse" title="Collapse the Ribbon"><svg width="14" height="9" viewBox="0 0 14 9"><path class="ico" d="M1 6.5 7 1.5l6 5"/></svg></div>
