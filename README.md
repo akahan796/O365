@@ -13,6 +13,29 @@ built from Figma (`Excel Add-In`, node `10331:10627`).
 
 Live on Vercel (auto-deploys on every push to `main`).
 
+## Access gate (password + portal)
+
+The site is protected by a **server-side password gate** (Vercel Edge Middleware +
+Edge Functions) — a shared password unlocks it, no accounts.
+
+- `middleware.js` — gates every path except the public allowlist; no valid cookie → `/login.html`.
+- `api/login.js` / `api/logout.js` — check the password / clear the session (cookie `o365_auth`).
+- `login.html` — the branded **login screen**.
+- `portal.html` — the **dashboard**: launcher tiles (HTML prototype + Figma) + sign out. Login lands here.
+- `index.html` — the gated prototype itself.
+
+**Required Vercel env vars** (Settings → Environment Variables → Production, then redeploy):
+
+| Name | Value |
+|------|-------|
+| `ACCESS_PASSWORD` | the password users type |
+| `SESSION_TOKEN` | a long random string — `openssl rand -hex 32` |
+
+Until these are set on a fresh deployment, the gate denies everyone. The gate needs
+Vercel's edge runtime — it does **not** run under a plain local static server
+(`python -m http.server`); the `login.html`/`portal.html` pages still render locally,
+but the auth flow only works on Vercel (or `vercel dev`).
+
 ## Auto-deploy
 
 Any change to this folder is automatically committed and pushed to `main` at the

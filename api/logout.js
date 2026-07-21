@@ -1,0 +1,23 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Vercel Edge Function — signs the user out on the SERVER.
+//
+// The session cookie is HttpOnly (not reachable from browser JavaScript), so
+// clearing it must happen here: we overwrite it with an expired cookie
+// (Max-Age=0) and redirect to the login page.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const config = { runtime: 'edge' };
+
+const COOKIE_NAME = 'o365_auth'; // must match middleware.js / login.js
+
+export default function handler(request) {
+  const origin = new URL(request.url).origin;
+  return new Response(null, {
+    status: 303,
+    headers: {
+      'Location': origin + '/login.html',
+      'Set-Cookie': `${COOKIE_NAME}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`,
+      'Cache-Control': 'no-store',
+    },
+  });
+}
