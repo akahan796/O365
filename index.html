@@ -66,6 +66,7 @@
     border-bottom:2px solid transparent;}
   .tab:hover{background:#eceae8;}
   .tab.active{color:var(--accent);font-weight:600;border-bottom:2px solid var(--accent);}
+  .tab.os{color:var(--accent);cursor:pointer;}          /* OneStream custom tabs are green */
   .tab.file{background:var(--accent);color:#fff;padding:0 14px;border-bottom:none;}
   .tabbar-right{margin-left:auto;display:flex;align-items:center;gap:6px;padding:0 8px;}
   .pill{display:flex;align-items:center;gap:6px;height:22px;padding:0 9px;border:1px solid #cfcdca;
@@ -107,6 +108,10 @@
   .list-item:hover{background:#e9e9f1;}
   .list-item img{width:16px;height:16px;display:block;flex-shrink:0;}
   .list-item span{font-size:11px;line-height:14px;color:#1a1a1a;}
+  .list-item.selected{border:1px solid #2f6fed;background:#eef4ff;padding:2px 6px 2px 5px;}
+  .list-item .beta{font-size:8px;font-weight:700;letter-spacing:.03em;color:#8a6a00;
+    background:#fce7a0;border-radius:3px;padding:1px 4px;margin-left:1px;}
+  .list-item .lcaret{color:#5a5a5a;display:flex;align-items:center;margin-left:2px;}
 
   /* ============ FORMULA BAR ============ */
   .formulabar{height:24px;flex:0 0 24px;display:flex;align-items:stretch;background:#fff;
@@ -218,8 +223,10 @@
     <div class="tab">Review</div>
     <div class="tab">View</div>
     <div class="tab">Automate</div>
+    <div class="tab">Developer</div>
     <div class="tab">Help</div>
-    <div class="tab active">OneStream 365</div>
+    <div class="tab os active" id="tab-os">OneStream 365</div>
+    <div class="tab os" id="tab-qv" style="display:none">Quick Views</div>
     <div class="tabbar-right">
       <div class="pill"><svg width="14" height="14" viewBox="0 0 16 16" style="color:#444"><path class="ico" d="M2.5 3.5h11v7h-6l-3 2.5v-2.5h-2z"/></svg>Comments</div>
       <div class="pill share"><svg width="14" height="14" viewBox="0 0 16 16" style="color:#217346"><path class="ico" d="M8 10.5V2.5M5 5l3-3 3 3"/><path class="ico" d="M3.5 8v5.5h9V8"/></svg>Share <svg width="9" height="9" viewBox="0 0 12 12" style="color:#217346"><path class="ico" d="M3 4.5 6 7.5l3-3"/></svg></div>
@@ -228,7 +235,7 @@
 
   <!-- ===================== RIBBON STRIP ===================== -->
   <div class="ribbon-strip">
-    <div class="ribbon">
+    <div class="ribbon" id="ribbon-main">
       <!-- Access -->
       <div class="group">
         <div class="group-body">
@@ -243,7 +250,7 @@
       <div class="group">
         <div class="group-body">
           <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Cube View</div></div>
-          <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Quick View</div></div>
+          <div class="item" id="btn-quickview" title="Open Quick Views"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Quick View</div></div>
           <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Table View</div></div>
         </div>
         <div class="caption">Explore</div>
@@ -311,6 +318,87 @@
         <div class="caption">Pane</div>
       </div>
     </div>
+
+    <!-- ===== Quick Views ribbon (state: /quickviews) ===== -->
+    <div class="ribbon" id="ribbon-quickviews" style="display:none">
+      <!-- Manage Members -->
+      <div class="group">
+        <div class="group-body">
+          <div class="list-cols">
+            <div class="list-col">
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Keep Only</span></div>
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Remove Only</span></div>
+            </div>
+            <div class="list-col">
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Next Level</span></div>
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Top of Hierarchy</span></div>
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Parents</span></div>
+            </div>
+            <div class="list-col">
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Children</span></div>
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Base</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="caption">Manage Members</div>
+      </div>
+      <div class="sep"></div>
+      <!-- Manage Quick Views -->
+      <div class="group">
+        <div class="group-body">
+          <div class="list-cols">
+            <div class="list-col">
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Add</span></div>
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Copy</span></div>
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Paste</span></div>
+            </div>
+            <div class="list-col">
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Delete</span></div>
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Options</span></div>
+            </div>
+            <div class="list-col">
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Undo</span></div>
+              <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Redo</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="caption">Manage Quick Views</div>
+      </div>
+      <div class="sep"></div>
+      <!-- Data -->
+      <div class="group">
+        <div class="group-body">
+          <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Refresh</div><div class="caret"><svg width="9" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Calculation</div><div class="caret"><svg width="9" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="item"><div class="icon"><img src="assets/icons/placeholder.svg" alt=""></div><div class="label">Submit</div><div class="caret"><svg width="9" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+        </div>
+        <div class="caption">Data</div>
+      </div>
+      <div class="sep"></div>
+      <!-- Analysis -->
+      <div class="group">
+        <div class="group-body">
+          <div class="list-col">
+            <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Drill Down</span></div>
+            <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Convert Quick View to XFGetCells</span></div>
+            <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Save Offline Copy</span></div>
+          </div>
+        </div>
+        <div class="caption">Analysis</div>
+      </div>
+      <div class="sep"></div>
+      <!-- Layout -->
+      <div class="group">
+        <div class="group-body">
+          <div class="list-col">
+            <div class="list-item selected"><img src="assets/icons/placeholder.svg" alt=""><span>Type in Sheet</span><span class="beta">BETA</span><span class="lcaret"><svg width="9" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="list-item"><img src="assets/icons/placeholder.svg" alt=""><span>Advanced Layouts</span><span class="beta">BETA</span></div>
+          </div>
+        </div>
+        <div class="caption">Layout</div>
+      </div>
+    </div>
+
     <div class="rib-collapse" title="Collapse the Ribbon"><svg width="14" height="9" viewBox="0 0 14 9"><path class="ico" d="M1 6.5 7 1.5l6 5"/></svg></div>
   </div>
 
@@ -394,6 +482,32 @@
   var t;
   window.addEventListener('resize', function(){ clearTimeout(t); t = setTimeout(buildGrid, 80); });
   buildGrid();
+
+  // ----- Ribbon state routing: main (/) <-> Quick Views (/quickviews) -----
+  (function(){
+    var main  = document.getElementById('ribbon-main');
+    var qv    = document.getElementById('ribbon-quickviews');
+    var tabOS = document.getElementById('tab-os');
+    var tabQV = document.getElementById('tab-qv');
+    function render(path){
+      var isQV = path === '/quickviews';
+      main.style.display  = isQV ? 'none' : '';
+      qv.style.display    = isQV ? '' : 'none';
+      tabQV.style.display = isQV ? '' : 'none';
+      tabOS.className = 'tab os' + (isQV ? '' : ' active');
+      tabQV.className = 'tab os' + (isQV ? ' active' : '');
+      document.title  = isQV ? 'Quick Views — OneStream 365' : 'OneStream 365 — Excel Add-In';
+    }
+    function go(path){
+      if (location.pathname !== path) history.pushState({}, '', path);
+      render(path);
+    }
+    document.getElementById('btn-quickview').addEventListener('click', function(){ go('/quickviews'); });
+    tabOS.addEventListener('click', function(){ go('/'); });
+    tabQV.addEventListener('click', function(){ go('/quickviews'); });
+    window.addEventListener('popstate', function(){ render(location.pathname); });
+    render(location.pathname);
+  })();
 </script>
 </body>
 </html>
