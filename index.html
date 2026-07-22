@@ -29,7 +29,64 @@
     -webkit-font-smoothing:antialiased;
     background:#fff;
   }
-  .app{display:flex;flex-direction:column;height:100vh;width:100vw;}
+  .app{display:flex;flex-direction:column;height:100%;width:100%;}
+
+  /* ===== UX review panel (left) + stage ===== */
+  @font-face{font-family:'OneStream Sans';src:url('fonts/OneStreamSans-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap;}
+  @font-face{font-family:'OneStream Sans';src:url('fonts/OneStreamSans-Medium.otf') format('opentype');font-weight:500;font-style:normal;font-display:swap;}
+  @font-face{font-family:'OneStream Sans';src:url('fonts/OneStreamSans-Bold.otf') format('opentype');font-weight:700;font-style:normal;font-display:swap;}
+  .frame{display:flex;height:100vh;width:100vw;}
+  .dsb{--brand:#0A5DFF;--panel:#F5F4EF;--panel-line:#E4E3DC;--panel-hover:#EAE9E2;--panel-active:#E3E2D9;--ink:#2B2B27;--ink-strong:#141414;--muted:#8A8A82;--note:#57564E;
+    width:280px;flex:none;min-width:0;overflow:hidden;background:var(--panel);border-right:1px solid var(--panel-line);display:flex;flex-direction:column;
+    font-family:'OneStream Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .dsb.collapsed{width:60px;}
+  .dsb-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:16px 14px 10px;}
+  .dsb-brand{display:flex;flex-direction:column;line-height:1.15;overflow:hidden;}
+  .dsb-title{font-size:18px;font-weight:700;color:var(--ink-strong);white-space:nowrap;}
+  .dsb-sub{font-size:11px;color:var(--muted);white-space:nowrap;}
+  .icbtn{width:30px;height:30px;flex:0 0 30px;border:0;background:none;border-radius:7px;color:#5A5A52;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;}
+  .icbtn:hover{background:var(--panel-hover);color:var(--ink-strong);}
+  .icbtn svg{width:18px;height:18px;}
+  .dsb-scroll{flex:1;overflow-y:auto;padding:6px 10px 16px;}
+  .dsb-item{display:flex;align-items:center;gap:12px;height:38px;padding:0 10px;border-radius:8px;color:var(--ink);font-size:14px;text-decoration:none;background:none;border:0;width:100%;cursor:pointer;white-space:nowrap;text-align:left;font-family:inherit;}
+  .dsb-item:hover{background:var(--panel-hover);}
+  .dsb-item.active{background:var(--panel-active);font-weight:600;color:var(--ink-strong);}
+  .dsb-item .ic{flex:0 0 20px;color:#5A5A52;display:inline-flex;align-items:center;justify-content:center;}
+  .dsb-item.active .ic{color:var(--brand);}
+  .dsb-item .ic svg{width:20px;height:20px;display:block;}
+  .dsb-cat{font-size:12px;color:var(--muted);padding:16px 12px 6px;white-space:nowrap;}
+  .dsb-sep{height:1px;background:var(--panel-line);margin:8px 12px;}
+  .dsb-info{font-size:12.5px;line-height:22px;color:var(--note);padding:2px 12px 4px;}
+  .dsb-info .row{display:flex;gap:8px;}
+  .dsb-info .k{color:var(--muted);flex:0 0 92px;}
+  .dsb-foot{border-top:1px solid var(--panel-line);padding:10px 14px;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:8px;white-space:nowrap;}
+  .dsb-foot svg{width:14px;height:14px;flex:0 0 14px;}
+  .dsb-toggle{cursor:pointer;}
+  .switch{margin-left:auto;flex:0 0 34px;width:34px;height:20px;border-radius:10px;background:#C9C8C0;position:relative;transition:background .15s ease;}
+  .switch.on{background:var(--brand);}
+  .switch .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:left .15s ease;}
+  .switch.on .knob{left:16px;}
+  .dsb.collapsed .dsb-head{justify-content:center;padding:16px 0 10px;}
+  .dsb.collapsed .dsb-brand,.dsb.collapsed .dsb-item .lbl,.dsb.collapsed .switch,.dsb.collapsed .dsb-cat,.dsb.collapsed .dsb-sep,.dsb.collapsed .dsb-info,.dsb.collapsed .dsb-foot span{display:none;}
+  .dsb.collapsed .dsb-item{justify-content:center;padding:0;gap:0;}
+  .dsb.collapsed .dsb-scroll{padding:6px 8px;}
+  .dsb.collapsed .dsb-foot{justify-content:center;padding:10px 0;}
+  .stage{flex:1;min-width:0;position:relative;overflow:hidden;}
+  .comment-layer{position:absolute;inset:0;pointer-events:none;z-index:50;font-family:'OneStream Sans',Arial,sans-serif;}
+  .comment-layer.off{display:none;}
+  .cmarker{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;cursor:pointer;}
+  .cpin{width:28px;height:28px;border-radius:50% 50% 50% 3px;background:#0A5DFF;border:2px solid #fff;box-shadow:0 2px 7px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;color:#fff;transition:transform .1s ease;}
+  .cmarker:hover .cpin{transform:scale(1.09);}
+  .cpin svg{width:15px;height:15px;}
+  .cpop{position:absolute;left:22px;top:-6px;width:240px;background:#fff;border:1px solid #E4E3DC;border-radius:10px;box-shadow:0 12px 34px rgba(20,20,20,.2);padding:12px 14px;display:none;}
+  .cmarker.open,.cmarker:hover{z-index:60;}
+  .cmarker.open .cpop,.cmarker:hover .cpop{display:block;}
+  .cmarker.flip .cpop{left:auto;right:22px;}
+  .cpop::before{content:'';position:absolute;left:-16px;top:0;bottom:0;width:16px;}
+  .cmarker.flip .cpop::before{left:auto;right:-16px;}
+  .cpop .who{font-size:12px;font-weight:700;color:#141414;margin:0 0 5px;}
+  .cpop .txt{font-size:13px;line-height:18px;color:#57564E;}
+  .cpop .txt a{color:#0A5DFF;font-weight:700;text-decoration:none;}
 
   svg{display:block;}
   .ico{fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;}
@@ -177,6 +234,34 @@
 </style>
 </head>
 <body>
+<div class="frame">
+  <aside class="dsb" id="dsb">
+    <div class="dsb-head">
+      <div class="dsb-brand"><span class="dsb-title">OneStream 365</span><span class="dsb-sub">Excel Add-In · UX Review</span></div>
+      <button class="icbtn" id="collapse" title="Collapse panel" aria-label="Collapse panel"></button>
+    </div>
+    <div class="dsb-scroll">
+      <a class="dsb-item" href="/portal.html"><span class="ic" data-ic="back"></span><span class="lbl">Back to portal</span></a>
+      <a class="dsb-item" href="/" target="_blank" rel="noopener"><span class="ic" data-ic="external"></span><span class="lbl">Open in new tab</span></a>
+      <div class="dsb-cat">Screens</div>
+      <button class="dsb-item nav active" data-view="default"><span class="ic" data-ic="screen"></span><span class="lbl">Default Ribbon</span></button>
+      <button class="dsb-item nav" data-view="quickviews"><span class="ic" data-ic="screen"></span><span class="lbl">Quick Views</span></button>
+      <div class="dsb-sep"></div>
+      <div class="dsb-item dsb-toggle" id="ux-notes-row" role="button" tabindex="0" aria-label="Toggle UX Notes"><span class="ic" data-ic="note"></span><span class="lbl">UX Notes</span><span class="switch on" id="ux-notes-switch" role="switch" aria-checked="true"><span class="knob"></span></span></div>
+      <div class="dsb-sep"></div>
+      <div class="dsb-cat">Information</div>
+      <div class="dsb-info">
+        <div class="row"><span class="k">Project</span><span>OneStream 365 Excel Add-In</span></div>
+        <div class="row"><span class="k">Screen</span><span id="info-screen">Default Ribbon</span></div>
+        <div class="row"><span class="k">Updated</span><span>July 21, 2026</span></div>
+      </div>
+      <div class="dsb-sep"></div>
+      <div class="dsb-cat">Downloads</div>
+      <a class="dsb-item" href="https://www.figma.com/design/TroajwRpGesV3XUefPpJns/Excel-Add-In?node-id=10331-10627" target="_blank" rel="noopener"><span class="ic" data-ic="link"></span><span class="lbl">Figma design</span></a>
+    </div>
+    <div class="dsb-foot"><span class="ic" data-ic="info" style="display:inline-flex"></span><span>UX review panel · OneStream 365</span></div>
+  </aside>
+  <main class="stage">
 <div class="app">
 
   <!-- ===================== TITLE BAR ===================== -->
@@ -460,6 +545,9 @@
   </div>
 
 </div>
+    <div class="comment-layer" id="comment-layer"></div>
+  </main>
+</div>
 
 <script>
   // Build the worksheet grid to fill available space; regenerate on resize.
@@ -497,9 +585,7 @@
       tabOS.className = 'tab os' + (isQV ? '' : ' active');
       tabQV.className = 'tab os' + (isQV ? ' active' : '');
       document.title  = isQV ? 'Quick Views — OneStream 365' : 'OneStream 365 — Excel Add-In';
-      // Tell a hosting preview frame (ux-preview-sidebar) which screen is active
-      try { if (window.parent && window.parent !== window)
-        window.parent.postMessage({ type:'ux:view', view: isQV ? 'quickviews' : 'default' }, '*'); } catch(e){}
+      if (window.__syncPanel) window.__syncPanel(isQV ? 'quickviews' : 'default');
     }
     function go(path){
       if (location.pathname !== path) history.pushState({}, '', path);
@@ -509,12 +595,82 @@
     tabOS.addEventListener('click', function(){ go('/'); });
     tabQV.addEventListener('click', function(){ go('/quickviews'); });
     window.addEventListener('popstate', function(){ render(location.pathname); });
-    // Let the preview sidebar's Screen nav drive the prototype
-    window.addEventListener('message', function(e){
-      if (e.data && e.data.type === 'ux:setView')
-        go(e.data.view === 'quickviews' ? '/quickviews' : '/');
-    });
+    window.__setScreen = function(view){ go(view === 'quickviews' ? '/quickviews' : '/'); };
     render(location.pathname);
+  })();
+
+  // ----- UX review panel: icons, collapse, screen nav, comment pins, notes -----
+  (function(){
+    var ICONS = {
+      collapse:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg>',
+      expand:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>',
+      back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
+      external:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>',
+      screen:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5"/></svg>',
+      note:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 12h5"/></svg>',
+      info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
+      link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg>',
+    };
+    var COMMENT_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C7 4 3 7.1 3 11c0 1.9 1 3.6 2.6 4.9L5 20l4.4-2.2c.83.2 1.7.3 2.6.3 5 0 9-3.1 9-7s-4-7-9-7z"/></svg>';
+    function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+    document.querySelectorAll('.ic[data-ic]').forEach(function(el){ el.innerHTML = ICONS[el.dataset.ic]||''; });
+
+    /* Collapse (persisted) */
+    var dsb = document.getElementById('dsb'), collapseBtn = document.getElementById('collapse');
+    function setCollapsed(on){
+      dsb.classList.toggle('collapsed', on);
+      collapseBtn.innerHTML = ICONS[on?'expand':'collapse'];
+      collapseBtn.title = on ? 'Expand panel' : 'Collapse panel';
+      try{ localStorage.setItem('o365_dsb_collapsed', on?'1':'0'); }catch(_){ }
+    }
+    setCollapsed((function(){ try{ return localStorage.getItem('o365_dsb_collapsed')==='1'; }catch(_){ return false; } })());
+    collapseBtn.addEventListener('click', function(){ setCollapsed(!dsb.classList.contains('collapsed')); });
+
+    /* Screen nav -> prototype router */
+    var SCREEN_LABEL = { 'default':'Default Ribbon', 'quickviews':'Quick Views' };
+    var infoScreen = document.getElementById('info-screen');
+    window.__syncPanel = function(view){
+      document.querySelectorAll('.dsb-item.nav').forEach(function(b){ b.classList.toggle('active', b.dataset.view===view); });
+      if (SCREEN_LABEL[view]) infoScreen.textContent = SCREEN_LABEL[view];
+    };
+    document.querySelectorAll('.dsb-item.nav').forEach(function(btn){
+      btn.addEventListener('click', function(){ if(window.__setScreen) window.__setScreen(btn.dataset.view); });
+    });
+    window.__syncPanel(location.pathname === '/quickviews' ? 'quickviews' : 'default');
+
+    /* Comment pins (UX Notes) */
+    var COMMENTS = [
+      { xPct:16, y:96, who:'Design', html:'Access · Explore · Data now use the real OneStream icons (24px).' },
+      { xPct:52, y:96, who:'Design', html:'Analysis group: new transparent 16px icons — Copy/Paste POV, Create Quick View, Drill Down, Convert.' },
+      { xPct:83, y:34, who:'Design', html:'Switch screens from the left. <b>Quick Views</b> shows the second ribbon state.' },
+    ];
+    var layer = document.getElementById('comment-layer');
+    layer.innerHTML = COMMENTS.map(function(c,i){
+      var flip = c.xPct >= 55 ? ' flip' : '';
+      return '<div class="cmarker'+flip+'" data-i="'+i+'" style="left:'+c.xPct+'%;top:'+c.y+'px;">'
+        + '<div class="cpin">'+COMMENT_ICON+'</div>'
+        + '<div class="cpop"><div class="who">'+esc(c.who)+'</div><div class="txt">'+(c.html||esc(c.text))+'</div></div>'
+        + '</div>';
+    }).join('');
+    layer.addEventListener('click', function(e){
+      var m = e.target.closest('.cmarker'); if(!m) return;
+      var wasOpen = m.classList.contains('open');
+      layer.querySelectorAll('.cmarker.open').forEach(function(x){ x.classList.remove('open'); });
+      if(!wasOpen) m.classList.add('open');
+    });
+
+    /* UX Notes toggle (persisted, default ON) */
+    var uxRow = document.getElementById('ux-notes-row'), uxSwitch = document.getElementById('ux-notes-switch');
+    function setNotes(on){
+      uxSwitch.classList.toggle('on', on);
+      uxSwitch.setAttribute('aria-checked', on?'true':'false');
+      layer.classList.toggle('off', !on);
+      if(!on) layer.querySelectorAll('.cmarker.open').forEach(function(x){ x.classList.remove('open'); });
+      try{ localStorage.setItem('o365_ux_notes', on?'1':'0'); }catch(_){ }
+    }
+    uxRow.addEventListener('click', function(){ setNotes(!uxSwitch.classList.contains('on')); });
+    uxRow.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); setNotes(!uxSwitch.classList.contains('on')); } });
+    setNotes((function(){ try{ var v=localStorage.getItem('o365_ux_notes'); return v===null ? true : v==='1'; }catch(_){ return true; } })());
   })();
 </script>
 </body>
