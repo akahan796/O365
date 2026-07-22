@@ -36,6 +36,7 @@
   @font-face{font-family:'OneStream Sans';src:url('fonts/OneStreamSans-Medium.otf') format('opentype');font-weight:500;font-style:normal;font-display:swap;}
   @font-face{font-family:'OneStream Sans';src:url('fonts/OneStreamSans-Bold.otf') format('opentype');font-weight:700;font-style:normal;font-display:swap;}
   .frame{display:flex;height:100vh;width:100vw;}
+  .bare .dsb,.bare .comment-layer{display:none;}
   .dsb{--brand:#0A5DFF;--panel:#F5F4EF;--panel-line:#E4E3DC;--panel-hover:#EAE9E2;--panel-active:#E3E2D9;--ink:#2B2B27;--ink-strong:#141414;--muted:#8A8A82;--note:#57564E;
     width:280px;flex:none;min-width:0;overflow:hidden;background:var(--panel);border-right:1px solid var(--panel-line);display:flex;flex-direction:column;
     font-family:'OneStream Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;}
@@ -232,6 +233,8 @@
   .zoom-track::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
     width:9px;height:9px;border-radius:50%;background:#8a8a8a;}
 </style>
+<script>/* bare mode: ?bare hides the review panel so only the prototype shows */
+try{ if(new URLSearchParams(location.search).has('bare')) document.documentElement.classList.add('bare'); }catch(e){}</script>
 </head>
 <body>
 <div class="frame">
@@ -242,7 +245,7 @@
     </div>
     <div class="dsb-scroll">
       <a class="dsb-item" href="/portal.html"><span class="ic" data-ic="back"></span><span class="lbl">Back to portal</span></a>
-      <a class="dsb-item" href="/" target="_blank" rel="noopener"><span class="ic" data-ic="external"></span><span class="lbl">Open in new tab</span></a>
+      <a class="dsb-item" id="open-newtab" href="/?bare" target="_blank" rel="noopener"><span class="ic" data-ic="external"></span><span class="lbl">Open in new tab</span></a>
       <div class="dsb-cat">Screens</div>
       <button class="dsb-item nav active" data-view="default"><span class="ic" data-ic="screen"></span><span class="lbl">Default Ribbon</span></button>
       <button class="dsb-item nav" data-view="quickviews"><span class="ic" data-ic="screen"></span><span class="lbl">Quick Views</span></button>
@@ -588,7 +591,7 @@
       if (window.__syncPanel) window.__syncPanel(isQV ? 'quickviews' : 'default');
     }
     function go(path){
-      if (location.pathname !== path) history.pushState({}, '', path);
+      if (location.pathname !== path) history.pushState({}, '', path + location.search);
       render(path);
     }
     document.getElementById('btn-quickview').addEventListener('click', function(){ go('/quickviews'); });
@@ -629,9 +632,11 @@
     /* Screen nav -> prototype router */
     var SCREEN_LABEL = { 'default':'Default Ribbon', 'quickviews':'Quick Views' };
     var infoScreen = document.getElementById('info-screen');
+    var openLink = document.getElementById('open-newtab');
     window.__syncPanel = function(view){
       document.querySelectorAll('.dsb-item.nav').forEach(function(b){ b.classList.toggle('active', b.dataset.view===view); });
       if (SCREEN_LABEL[view]) infoScreen.textContent = SCREEN_LABEL[view];
+      if (openLink) openLink.href = (view==='quickviews' ? '/quickviews' : '/') + '?bare';
     };
     document.querySelectorAll('.dsb-item.nav').forEach(function(btn){
       btn.addEventListener('click', function(){ if(window.__setScreen) window.__setScreen(btn.dataset.view); });
@@ -639,11 +644,7 @@
     window.__syncPanel(location.pathname === '/quickviews' ? 'quickviews' : 'default');
 
     /* Comment pins (UX Notes) */
-    var COMMENTS = [
-      { xPct:16, y:96, who:'Design', html:'Access · Explore · Data now use the real OneStream icons (24px).' },
-      { xPct:52, y:96, who:'Design', html:'Analysis group: new transparent 16px icons — Copy/Paste POV, Create Quick View, Drill Down, Convert.' },
-      { xPct:83, y:34, who:'Design', html:'Switch screens from the left. <b>Quick Views</b> shows the second ribbon state.' },
-    ];
+    var COMMENTS = [];
     var layer = document.getElementById('comment-layer');
     layer.innerHTML = COMMENTS.map(function(c,i){
       var flip = c.xPct >= 55 ? ' flip' : '';
