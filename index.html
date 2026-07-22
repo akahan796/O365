@@ -497,6 +497,9 @@
       tabOS.className = 'tab os' + (isQV ? '' : ' active');
       tabQV.className = 'tab os' + (isQV ? ' active' : '');
       document.title  = isQV ? 'Quick Views — OneStream 365' : 'OneStream 365 — Excel Add-In';
+      // Tell a hosting preview frame (ux-preview-sidebar) which screen is active
+      try { if (window.parent && window.parent !== window)
+        window.parent.postMessage({ type:'ux:view', view: isQV ? 'quickviews' : 'default' }, '*'); } catch(e){}
     }
     function go(path){
       if (location.pathname !== path) history.pushState({}, '', path);
@@ -506,6 +509,11 @@
     tabOS.addEventListener('click', function(){ go('/'); });
     tabQV.addEventListener('click', function(){ go('/quickviews'); });
     window.addEventListener('popstate', function(){ render(location.pathname); });
+    // Let the preview sidebar's Screen nav drive the prototype
+    window.addEventListener('message', function(e){
+      if (e.data && e.data.type === 'ux:setView')
+        go(e.data.view === 'quickviews' ? '/quickviews' : '/');
+    });
     render(location.pathname);
   })();
 </script>
