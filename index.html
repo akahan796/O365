@@ -232,6 +232,50 @@
   .zoom-track{width:80px;height:2px;background:#c4c2c0;position:relative;}
   .zoom-track::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
     width:9px;height:9px;border-radius:50%;background:#8a8a8a;}
+
+  /* ===== Dark mode (prototype chrome only; icons intentionally left unchanged) ===== */
+  .app.dark{
+    --green:#1b1b1b; --accent:#4db56a; --chrome:#2b2b2b; --chrome2:#262626;
+    --line:#3d3d3d; --line-dk:#4a4a4a; --grid:#3a3a3a; --header:#2d2d2d;
+    --hdr-text:#9a9a9a; --text:#c8c8c8; --sel-fill:#2c4a38;
+    background:#1e1e1e;
+  }
+  .app.dark .search{background:rgba(255,255,255,.10);color:#d0d0d0;}
+  .app.dark .tabbar{background:#1b1b1b;border-bottom-color:#333;}
+  .app.dark .tab{color:#d4d4d4;}
+  .app.dark .tab:hover{background:#2d2d2d;}
+  .app.dark .tab.file{background:transparent;color:#e6e6e6;}
+  .app.dark .pill{background:#2d2d2d;border-color:#3d3d3d;color:#d4d4d4;}
+  .app.dark .rib-collapse{color:#a0a0a0;}
+  .app.dark .item:hover,.app.dark .list-item:hover{background:#33383f;}
+  .app.dark .label{color:#dcdcdc;}
+  .app.dark .caption{color:#9a9a9a;}
+  .app.dark .caret{color:#b0b0b0;}
+  .app.dark .list-item span{color:#dcdcdc;}
+  .app.dark .list-item.selected{background:#233247;}
+  .app.dark .formulabar{background:#252526;border-bottom-color:#3d3d3d;color:#c8c8c8;}
+  .app.dark .namebox{border-right-color:#3d3d3d;}
+  .app.dark .fx-group{border-right-color:#3d3d3d;}
+  .app.dark .formula-input{color:#e6e6e6;}
+  .app.dark .grid-wrap,.app.dark .grid{background:#1e1e1e;}
+  .app.dark .colhead.sel,.app.dark .rowhead.sel{color:#8fe0ad;}
+  .app.dark .corner::after{border-bottom-color:#777;}
+  .app.dark .taskpane{background:#1e1e1e;}
+  .app.dark .pane-head{border-bottom-color:#3d3d3d;}
+  .app.dark .pane-title{color:#e6e6e6;}
+  .app.dark .pane-btn{color:#b0b0b0;}
+  .app.dark .pane-btn:hover{background:#333;}
+  .app.dark .pane-body{background:#1e1e1e;}
+  .app.dark .sheetbar{border-top-color:#333;color:#b0b0b0;}
+  .app.dark .sheet-tab{background:#1e1e1e;color:#e6e6e6;}
+  .app.dark .sheet-add{color:#b0b0b0;}
+  .app.dark .statusbar{border-top-color:#333;}
+  .app.dark .view-icons{color:#b0b0b0;}
+  .app.dark .view-icons .vi.active{background:#3a3a3a;}
+  .app.dark .zoom-track{background:#4a4a4a;}
+  .app.dark .grid-wrap::-webkit-scrollbar{width:16px;height:16px;}
+  .app.dark .grid-wrap::-webkit-scrollbar-thumb{background:#3f3f3f;border:4px solid #1e1e1e;border-radius:8px;}
+  .app.dark .grid-wrap::-webkit-scrollbar-track{background:#1e1e1e;}
 </style>
 <script>/* bare mode: ?bare hides the review panel so only the prototype shows */
 try{ if(new URLSearchParams(location.search).has('bare')) document.documentElement.classList.add('bare'); }catch(e){}</script>
@@ -251,6 +295,7 @@ try{ if(new URLSearchParams(location.search).has('bare')) document.documentEleme
       <button class="dsb-item nav" data-view="quickviews"><span class="ic" data-ic="screen"></span><span class="lbl">Quick Views</span></button>
       <div class="dsb-sep"></div>
       <div class="dsb-item dsb-toggle" id="ux-notes-row" role="button" tabindex="0" aria-label="Toggle UX Notes"><span class="ic" data-ic="note"></span><span class="lbl">UX Notes</span><span class="switch on" id="ux-notes-switch" role="switch" aria-checked="true"><span class="knob"></span></span></div>
+      <div class="dsb-item dsb-toggle" id="dark-row" role="button" tabindex="0" aria-label="Toggle dark mode"><span class="ic" data-ic="dark"></span><span class="lbl">Dark mode</span><span class="switch" id="dark-switch" role="switch" aria-checked="false"><span class="knob"></span></span></div>
       <div class="dsb-sep"></div>
       <div class="dsb-cat">Information</div>
       <div class="dsb-info">
@@ -610,6 +655,7 @@ try{ if(new URLSearchParams(location.search).has('bare')) document.documentEleme
       note:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 12h5"/></svg>',
       info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
       link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg>',
+      dark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
     };
     var COMMENT_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C7 4 3 7.1 3 11c0 1.9 1 3.6 2.6 4.9L5 20l4.4-2.2c.83.2 1.7.3 2.6.3 5 0 9-3.1 9-7s-4-7-9-7z"/></svg>';
     function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
@@ -669,6 +715,18 @@ try{ if(new URLSearchParams(location.search).has('bare')) document.documentEleme
     uxRow.addEventListener('click', function(){ setNotes(!uxSwitch.classList.contains('on')); });
     uxRow.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); setNotes(!uxSwitch.classList.contains('on')); } });
     setNotes((function(){ try{ var v=localStorage.getItem('o365_ux_notes'); return v===null ? true : v==='1'; }catch(_){ return true; } })());
+
+    /* Dark mode toggle (persisted; defaults to OS preference) */
+    var appEl = document.querySelector('.app'), darkRow = document.getElementById('dark-row'), darkSwitch = document.getElementById('dark-switch');
+    function setDark(on){
+      appEl.classList.toggle('dark', on);
+      darkSwitch.classList.toggle('on', on);
+      darkSwitch.setAttribute('aria-checked', on?'true':'false');
+      try{ localStorage.setItem('o365_dark', on?'1':'0'); }catch(_){ }
+    }
+    darkRow.addEventListener('click', function(){ setDark(!darkSwitch.classList.contains('on')); });
+    darkRow.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); setDark(!darkSwitch.classList.contains('on')); } });
+    setDark((function(){ try{ var v=localStorage.getItem('o365_dark'); return v===null ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) : v==='1'; }catch(_){ return false; } })());
   })();
 </script>
 </body>
