@@ -722,6 +722,11 @@ try{ if(new URLSearchParams(location.search).has('bare')) document.documentEleme
       appEl.classList.toggle('dark', on);
       darkSwitch.classList.toggle('on', on);
       darkSwitch.setAttribute('aria-checked', on?'true':'false');
+      /* Swap ribbon icons to dark-mode variants (light-gray bodies, lighter blue accents) */
+      document.querySelectorAll('.ribbon-strip img[src*="assets/icons/"]').forEach(function(img){
+        var s = img.getAttribute('src');
+        img.setAttribute('src', s.replace(/(?:-dark)?\.svg$/, on ? '-dark.svg' : '.svg'));
+      });
       try{ localStorage.setItem('o365_dark', on?'1':'0'); }catch(_){ }
     }
     darkRow.addEventListener('click', function(){ setDark(!darkSwitch.classList.contains('on')); });
