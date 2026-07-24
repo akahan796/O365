@@ -30,18 +30,26 @@ export default async function handler(request) {
     }
   } catch (e) { /* ignore malformed body */ }
 
-  const expected = process.env.ACCESS_PASSWORD;
   const token = process.env.SESSION_TOKEN;
+  const viewerPw = process.env.ACCESS_PASSWORD;   // standard reviewer login
+  const editorPw = process.env.EDITOR_PASSWORD;   // can add/move/remove UX notes
 
-  if (expected && token && password === expected) {
-    return new Response(null, {
-      status: 303,
-      headers: {
-        'Location': origin + REDIRECT_AFTER_LOGIN,
-        'Set-Cookie': `${COOKIE_NAME}=${token}; Path=/; HttpOnly; Secure; SameSite=Lax`,
-        'Cache-Control': 'no-store',
-      },
-    });
+  let role = null;
+  if (editorPw && password === editorPw) role = 'editor';
+  else if (viewerPw && password === viewerPw) role = 'viewer';
+
+  if (token && role) {
+    const headers = new Headers({ 'Location': origin + REDIRECT_AFTER_LOGIN, 'Cache-Control': 'no-store' });
+    headers.append('Set-Cookie', `${COOKIE_NAME}=${token}; Path=/; HttpOnly; Secure; SameSite=Lax`);
+    // Readable role hint (UI only) + HttpOnly write-gate for the shared notes store.
+    headers.append('Set-Cookie', `o365_role=${role}; Path=/; Secure; SameSite=Lax`);
+    const editTok = process.env.EDIT_TOKEN;
+    if (role === 'editor' && editTok) {
+      headers.append('Set-Cookie', `o365_edit=${editTok}; Path=/; HttpOnly; Secure; SameSite=Lax`);
+    } else {
+      headers.append('Set-Cookie', `o365_edit=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
+    }
+    return new Response(null, { status: 303, headers });
   }
 
   return new Response(null, {

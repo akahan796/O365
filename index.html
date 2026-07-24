@@ -76,9 +76,8 @@
   .comment-layer{position:absolute;inset:0;pointer-events:none;z-index:50;font-family:'OneStream Sans',Arial,sans-serif;}
   .comment-layer.off{display:none;}
   .cmarker{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;cursor:pointer;}
-  .cpin{width:28px;height:28px;border-radius:50% 50% 50% 3px;background:#0A5DFF;border:2px solid #fff;box-shadow:0 2px 7px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;color:#fff;transition:transform .1s ease;}
-  .cmarker:hover .cpin{transform:scale(1.09);}
-  .cpin svg{width:15px;height:15px;}
+  .cpin{width:12px;height:12px;border-radius:50%;background:#0A5DFF;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.28);transition:transform .1s ease;}
+  .cmarker:hover .cpin{transform:scale(1.3);}
   .cpop{position:absolute;left:22px;top:-6px;width:240px;background:#fff;border:1px solid #E4E3DC;border-radius:10px;box-shadow:0 12px 34px rgba(20,20,20,.2);padding:12px 14px;display:none;}
   .cmarker.open,.cmarker:hover{z-index:60;}
   .cmarker.open .cpop,.cmarker:hover .cpop{display:block;}
@@ -88,6 +87,39 @@
   .cpop .who{font-size:12px;font-weight:700;color:#141414;margin:0 0 5px;}
   .cpop .txt{font-size:13px;line-height:18px;color:#57564E;}
   .cpop .txt a{color:#0A5DFF;font-weight:700;text-decoration:none;}
+  .cpop .txt a:hover{text-decoration:underline;}
+  /* Editor affordances (ported from LCM review chrome) */
+  [hidden]{display:none !important;}
+  .comment-layer.editing .cmarker{cursor:grab;}
+  .comment-layer.editing .cmarker.dragging{cursor:grabbing;z-index:70;}
+  .comment-layer.editing .cpin{width:14px;height:14px;position:relative;touch-action:none;box-shadow:0 0 0 3px rgba(10,93,255,.18),0 1px 4px rgba(0,0,0,.28);}
+  .comment-layer.editing .cpin::after{content:'';position:absolute;left:50%;top:50%;width:30px;height:30px;transform:translate(-50%,-50%);border-radius:50%;}
+  body.dragging-note{cursor:grabbing;user-select:none;}
+  .comment-layer.placing{pointer-events:auto;cursor:crosshair;}
+  .cpop .who-input{width:100%;box-sizing:border-box;font:inherit;font-size:12px;font-weight:700;color:#141414;border:1px solid #E4E3DC;border-radius:6px;padding:5px 7px;margin-bottom:6px;}
+  .cpop textarea.note-input{width:100%;box-sizing:border-box;font:inherit;font-size:13px;line-height:18px;color:#2B2B27;border:1px solid #E4E3DC;border-radius:6px;padding:6px 7px;min-height:76px;resize:vertical;}
+  .cpop-actions{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+  .cpop-actions .del{background:none;border:0;color:#C6243A;font:inherit;font-size:12px;font-weight:700;cursor:pointer;padding:0;}
+  .cpop-actions .del:hover{text-decoration:underline;}
+  .cpop-actions .done{background:var(--brand);color:#fff;border:0;border-radius:6px;font:inherit;font-size:12px;font-weight:700;padding:5px 12px;cursor:pointer;}
+  /* Review Tools: edit tools, download button, info card */
+  .dsb-scroll{display:flex;flex-direction:column;}
+  .edit-tools{padding:2px 12px 8px 44px;}
+  .etbtn{font:inherit;font-size:12px;font-weight:600;color:var(--ink,#2B2B27);background:#fff;border:1px solid var(--panel-line);border-radius:6px;padding:5px 9px;cursor:pointer;}
+  .etbtn:hover{background:var(--panel-hover,#EAE9E2);}
+  .edit-hint{font-size:11px;color:var(--muted);line-height:15px;margin-top:6px;}
+  .save-status{color:var(--brand);font-weight:600;}
+  .dl-btn{display:inline-flex;align-self:flex-start;align-items:center;justify-content:center;gap:8px;margin:2px 12px 4px;height:34px;padding:0 16px;border:0;background:#5E5D57;color:#fff;border-radius:8px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .12s ease;}
+  .dl-btn:hover{background:#4C4B46;}
+  .dl-btn:disabled{opacity:.65;cursor:default;background:#5E5D57;}
+  .dsb-stamp,#dl-note{font-size:11px;color:var(--muted);}
+  #dl-note{padding:0 14px 4px 12px;margin-top:6px;line-height:15px;max-width:180px;}
+  .info-card{margin:12px;margin-top:auto;background:#fff;border:1px solid var(--panel-line);border-radius:10px;padding:13px 14px;box-shadow:0 1px 3px rgba(20,20,20,.06);}
+  .info-card .info-title{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);margin:0 0 9px;}
+  .info-card .dsb-info{padding:0;font-size:12.5px;line-height:21px;}
+  .info-card .dsb-info .k{flex:0 0 60px;}
+  .info-card .dsb-info span:last-child{color:var(--ink-strong,#141414);font-weight:500;}
+  .dsb.collapsed .edit-tools,.dsb.collapsed .dl-btn,.dsb.collapsed #dl-note,.dsb.collapsed .info-card{display:none;}
 
   svg{display:block;}
   .ico{fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;}
@@ -293,15 +325,24 @@ try{ if(new URLSearchParams(location.search).has('bare')) document.documentEleme
       <div class="dsb-cat">Screens</div>
       <button class="dsb-item nav active" data-view="default"><span class="ic" data-ic="screen"></span><span class="lbl">Default Ribbon</span></button>
       <button class="dsb-item nav" data-view="quickviews"><span class="ic" data-ic="screen"></span><span class="lbl">Quick Views</span></button>
-      <div class="dsb-sep"></div>
+      <div class="dsb-cat">Review Tools</div>
       <div class="dsb-item dsb-toggle" id="ux-notes-row" role="button" tabindex="0" aria-label="Toggle UX Notes"><span class="ic" data-ic="note"></span><span class="lbl">UX Notes</span><span class="switch on" id="ux-notes-switch" role="switch" aria-checked="true"><span class="knob"></span></span></div>
       <div class="dsb-item dsb-toggle" id="dark-row" role="button" tabindex="0" aria-label="Toggle dark mode"><span class="ic" data-ic="dark"></span><span class="lbl">Dark mode</span><span class="switch" id="dark-switch" role="switch" aria-checked="false"><span class="knob"></span></span></div>
-      <div class="dsb-sep"></div>
-      <div class="dsb-cat">Information</div>
-      <div class="dsb-info">
-        <div class="row"><span class="k">Project</span><span>OneStream 365 Excel Add-In</span></div>
-        <div class="row"><span class="k">Screen</span><span id="info-screen">Default Ribbon</span></div>
-        <div class="row"><span class="k">Updated</span><span>July 21, 2026</span></div>
+      <div class="dsb-item dsb-toggle" id="edit-notes-row" role="button" tabindex="0" aria-label="Toggle edit mode" hidden><span class="ic" data-ic="edit"></span><span class="lbl">Edit notes</span><span class="switch" id="edit-notes-switch" role="switch" aria-checked="false"><span class="knob"></span></span></div>
+      <div class="edit-tools" id="edit-tools" hidden>
+        <button class="etbtn" id="add-note" type="button">＋ Add note</button>
+        <div class="edit-hint">Drag a dot to move · click to edit · <span id="save-status" class="save-status"></span></div>
+      </div>
+      <div class="dsb-cat">Downloads</div>
+      <button class="dl-btn" id="dl-latest" type="button"><span class="lbl">Download Latest</span></button>
+      <div class="dsb-stamp" id="dl-note">Bundles the live prototype code into a ZIP</div>
+      <div class="info-card">
+        <div class="info-title">Information</div>
+        <div class="dsb-info">
+          <div class="row"><span class="k">Project</span><span>OneStream 365 Excel Add-In</span></div>
+          <div class="row"><span class="k">Screen</span><span id="info-screen">Default Ribbon</span></div>
+          <div class="row"><span class="k">Updated</span><span>July 24, 2026</span></div>
+        </div>
       </div>
     </div>
     <div class="dsb-foot"><span class="ic" data-ic="info" style="display:inline-flex"></span><span>UX review panel · OneStream 365</span></div>
@@ -656,6 +697,7 @@ try{ if(new URLSearchParams(location.search).has('bare')) document.documentEleme
       info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
       link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg>',
       dark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
+      edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
     };
     var COMMENT_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C7 4 3 7.1 3 11c0 1.9 1 3.6 2.6 4.9L5 20l4.4-2.2c.83.2 1.7.3 2.6.3 5 0 9-3.1 9-7s-4-7-9-7z"/></svg>';
     function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
@@ -676,45 +718,160 @@ try{ if(new URLSearchParams(location.search).has('bare')) document.documentEleme
     var SCREEN_LABEL = { 'default':'Default Ribbon', 'quickviews':'Quick Views' };
     var infoScreen = document.getElementById('info-screen');
     var openLink = document.getElementById('open-newtab');
+    var currentView = 'default';
+    var layer = document.getElementById('comment-layer');
     window.__syncPanel = function(view){
-      document.querySelectorAll('.dsb-item.nav').forEach(function(b){ b.classList.toggle('active', b.dataset.view===view); });
-      if (SCREEN_LABEL[view]) infoScreen.textContent = SCREEN_LABEL[view];
-      if (openLink) openLink.href = (view==='quickviews' ? '/quickviews' : '/') + '?bare';
+      currentView = (view==='quickviews') ? 'quickviews' : 'default';
+      document.querySelectorAll('.dsb-item.nav').forEach(function(b){ b.classList.toggle('active', b.dataset.view===currentView); });
+      if (SCREEN_LABEL[currentView]) infoScreen.textContent = SCREEN_LABEL[currentView];
+      if (openLink) openLink.href = (currentView==='quickviews' ? '/quickviews' : '/') + '?bare';
+      renderComments();
     };
     document.querySelectorAll('.dsb-item.nav').forEach(function(btn){
       btn.addEventListener('click', function(){ if(window.__setScreen) window.__setScreen(btn.dataset.view); });
     });
-    window.__syncPanel(location.pathname === '/quickviews' ? 'quickviews' : 'default');
 
-    /* Comment pins (UX Notes) */
-    var COMMENTS = [];
-    var layer = document.getElementById('comment-layer');
-    layer.innerHTML = COMMENTS.map(function(c,i){
-      var flip = c.xPct >= 55 ? ' flip' : '';
-      return '<div class="cmarker'+flip+'" data-i="'+i+'" style="left:'+c.xPct+'%;top:'+c.y+'px;">'
-        + '<div class="cpin">'+COMMENT_ICON+'</div>'
-        + '<div class="cpop"><div class="who">'+esc(c.who)+'</div><div class="txt">'+(c.html||esc(c.text))+'</div></div>'
-        + '</div>';
-    }).join('');
+    /* ===== UX Notes: view-scoped, editor role, shared store (ported from LCM) ===== */
+    var DEFAULT_COMMENTS = [];
+    var ROLE = (document.cookie.match(/(?:^|;\s*)o365_role=([^;]+)/) || [])[1] || 'viewer';
+    var isEditor = ROLE === 'editor';
+    var CM_KEY = 'o365_comments_v1';
+    var COMMENTS = loadComments();
+    var editMode = false, placing = false, saveTimer = null;
+    function loadComments(){ try{ var s = JSON.parse(localStorage.getItem(CM_KEY)); if(Array.isArray(s)) return s; }catch(_){} return DEFAULT_COMMENTS.slice(); }
+    function setSaveStatus(msg){ var el = document.getElementById('save-status'); if(el) el.textContent = msg; }
+    function saveComments(){ try{ localStorage.setItem(CM_KEY, JSON.stringify(COMMENTS)); }catch(_){} scheduleServerSave(); }
+    function scheduleServerSave(){ if(!isEditor) return; clearTimeout(saveTimer); setSaveStatus('Saving…'); saveTimer = setTimeout(pushServer, 600); }
+    function pushServer(){
+      fetch('/api/notes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(COMMENTS)})
+        .then(function(r){ if(r.ok) setSaveStatus('Saved for everyone ✓'); else if(r.status===501) setSaveStatus('Shared store not set up — saved locally'); else if(r.status===403) setSaveStatus('Not permitted'); else setSaveStatus('Save failed — kept locally'); })
+        .catch(function(){ setSaveStatus('Offline — kept locally'); });
+    }
+    function pullServer(){
+      fetch('/api/notes', {headers:{'Cache-Control':'no-store'}}).then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(data){ if(Array.isArray(data)){ COMMENTS = data; try{ localStorage.setItem(CM_KEY, JSON.stringify(COMMENTS)); }catch(_){} renderComments(); } }).catch(function(){});
+    }
+    function renderComments(){
+      layer.innerHTML = COMMENTS.map(function(c,i){
+        if((c.view||'default') !== currentView) return '';
+        var flip = c.xPct >= 55 ? ' flip' : '';
+        var body = editMode
+          ? '<input class="who-input" value="'+esc(c.who||'')+'" placeholder="Author / label"/>'
+            + '<textarea class="note-input" placeholder="Note text">'+esc(c.text||'')+'</textarea>'
+            + '<div class="cpop-actions"><button class="del" type="button">Delete</button><button class="done" type="button">Done</button></div>'
+          : '<div class="who">'+esc(c.who)+'</div><div class="txt">'+(c.html||esc(c.text))+'</div>';
+        return '<div class="cmarker'+flip+'" data-i="'+i+'" style="left:'+c.xPct+'%;top:'+c.y+'px;"><div class="cpin"></div><div class="cpop">'+body+'</div></div>';
+      }).join('');
+    }
+    window.__syncPanel(location.pathname === '/quickviews' ? 'quickviews' : 'default');
+    pullServer();
+    document.addEventListener('visibilitychange', function(){ if(!document.hidden && !editMode) pullServer(); });
+    setInterval(function(){ if(!editMode) pullServer(); }, 30000);
+
     layer.addEventListener('click', function(e){
+      if(placing){
+        var r = layer.getBoundingClientRect();
+        var xPct = Math.max(0, Math.min(100, ((e.clientX - r.left)/r.width)*100));
+        var y = Math.max(0, Math.min(r.height, e.clientY - r.top));
+        COMMENTS.push({ view:currentView, xPct:+xPct.toFixed(1), y:Math.round(y), who:'UX', text:'New note' });
+        placing = false; layer.classList.remove('placing'); saveComments(); renderComments();
+        var nm = layer.querySelector('.cmarker[data-i="'+(COMMENTS.length-1)+'"]'); if(nm){ nm.classList.add('open'); var t = nm.querySelector('.note-input'); if(t) setTimeout(function(){ t.focus(); t.select(); }, 0); }
+        return;
+      }
+      var pop = e.target.closest('.cpop');
+      if(pop){ var mk = e.target.closest('.cmarker'); var i = +mk.dataset.i; if(e.target.closest('.del')){ COMMENTS.splice(i,1); saveComments(); renderComments(); } else if(e.target.closest('.done')){ mk.classList.remove('open'); } return; }
       var m = e.target.closest('.cmarker'); if(!m) return;
+      if(!editMode) return;                                    // view mode: hover-only, no click-pin
       var wasOpen = m.classList.contains('open');
       layer.querySelectorAll('.cmarker.open').forEach(function(x){ x.classList.remove('open'); });
-      if(!wasOpen) m.classList.add('open');
+      if(!wasOpen){ m.classList.add('open'); var ta = m.querySelector('.note-input'); if(ta) setTimeout(function(){ ta.focus(); }, 0); }
+    });
+    layer.addEventListener('input', function(e){
+      var mk = e.target.closest('.cmarker'); if(!mk) return; var i = +mk.dataset.i;
+      if(e.target.classList.contains('note-input')){ COMMENTS[i].text = e.target.value; delete COMMENTS[i].html; saveComments(); }
+      else if(e.target.classList.contains('who-input')){ COMMENTS[i].who = e.target.value; saveComments(); }
+    });
+    layer.addEventListener('pointerdown', function(e){
+      if(!editMode) return; if(e.button && e.button!==0) return;
+      var pin = e.target.closest('.cpin'); if(!pin) return;
+      var mk = pin.closest('.cmarker'); var i = +mk.dataset.i;
+      var r = layer.getBoundingClientRect(); var startX = e.clientX, startY = e.clientY, moved = false;
+      try{ pin.setPointerCapture(e.pointerId); }catch(_){}
+      function move(ev){
+        if(!moved){ if(Math.abs(ev.clientX-startX)<3 && Math.abs(ev.clientY-startY)<3) return; moved = true; mk.classList.add('dragging'); document.body.classList.add('dragging-note'); }
+        var xPct = Math.max(0, Math.min(100, ((ev.clientX - r.left)/r.width)*100));
+        var y = Math.max(0, Math.min(r.height, ev.clientY - r.top));
+        COMMENTS[i].xPct = +xPct.toFixed(1); COMMENTS[i].y = Math.round(y);
+        mk.style.left = COMMENTS[i].xPct+'%'; mk.style.top = COMMENTS[i].y+'px'; mk.classList.toggle('flip', COMMENTS[i].xPct>=55);
+      }
+      function up(){
+        try{ pin.releasePointerCapture(e.pointerId); }catch(_){}
+        pin.removeEventListener('pointermove', move); pin.removeEventListener('pointerup', up); pin.removeEventListener('pointercancel', up);
+        mk.classList.remove('dragging'); document.body.classList.remove('dragging-note');
+        if(moved){ saveComments(); var sw = function(ev){ ev.stopPropagation(); ev.preventDefault(); cl(); }; var cl = function(){ layer.removeEventListener('click', sw, true); clearTimeout(tt); }; layer.addEventListener('click', sw, true); var tt = setTimeout(cl, 350); }
+      }
+      pin.addEventListener('pointermove', move); pin.addEventListener('pointerup', up); pin.addEventListener('pointercancel', up);
     });
 
     /* UX Notes toggle (persisted, default ON) */
     var uxRow = document.getElementById('ux-notes-row'), uxSwitch = document.getElementById('ux-notes-switch');
     function setNotes(on){
-      uxSwitch.classList.toggle('on', on);
-      uxSwitch.setAttribute('aria-checked', on?'true':'false');
+      uxSwitch.classList.toggle('on', on); uxSwitch.setAttribute('aria-checked', on?'true':'false');
       layer.classList.toggle('off', !on);
       if(!on) layer.querySelectorAll('.cmarker.open').forEach(function(x){ x.classList.remove('open'); });
-      try{ localStorage.setItem('o365_ux_notes', on?'1':'0'); }catch(_){ }
+      try{ localStorage.setItem('o365_ux_notes', on?'1':'0'); }catch(_){}
     }
     uxRow.addEventListener('click', function(){ setNotes(!uxSwitch.classList.contains('on')); });
     uxRow.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); setNotes(!uxSwitch.classList.contains('on')); } });
-    setNotes((function(){ try{ var v=localStorage.getItem('o365_ux_notes'); return v===null ? true : v==='1'; }catch(_){ return true; } })());
+    setNotes((function(){ try{ var v = localStorage.getItem('o365_ux_notes'); return v===null ? true : v==='1'; }catch(_){ return true; } })());
+
+    /* Editor role — unlock add/move/remove of notes (server sets o365_role=editor) */
+    var editRow = document.getElementById('edit-notes-row'), editSwitch = document.getElementById('edit-notes-switch'), editTools = document.getElementById('edit-tools');
+    function setEdit(on){
+      editMode = on && isEditor;
+      editSwitch.classList.toggle('on', editMode); editSwitch.setAttribute('aria-checked', editMode?'true':'false');
+      editTools.hidden = !editMode; layer.classList.toggle('editing', editMode);
+      if(editMode) setNotes(true);
+      if(!editMode){ placing = false; layer.classList.remove('placing'); }
+      renderComments();
+    }
+    if(isEditor){
+      editRow.hidden = false;
+      editRow.addEventListener('click', function(){ setEdit(!editMode); });
+      editRow.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); setEdit(!editMode); } });
+      document.getElementById('add-note').addEventListener('click', function(){ placing = true; layer.classList.add('placing'); });
+    }
+
+    /* Download Latest — zip the live prototype in the browser (no manual regen) */
+    var ICON_NAMES = ['addartifact','analysis','arrow_b','calculation','changeapp','convert','copypov','createquickview','cubeview','drilldown','fileexplorer','insheet','login','logout','parameters','pastepov','placeholder','preferences','quickview','refresh','saveoffline','savetoserver','selectmember','showpane','submit','tableview','taskactivity'];
+    var dlBtn = document.getElementById('dl-latest');
+    function dlLabel(t){ var s = dlBtn.querySelector('.lbl'); if(s) s.textContent = t; }
+    function dlDate(){ var d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+    function fetchU8(url){ return fetch(url,{cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error(url); return r.arrayBuffer(); }).then(function(b){ return new Uint8Array(b); }); }
+    function dlReadme(){
+      return '# OneStream 365 — Excel Add-In prototype\n\nSelf-contained HTML/CSS/JS prototype, generated ' + dlDate() + '.\n\n- `index.html` — the whole prototype. Add `?bare` to the URL to hide the UX review panel.\n- `assets/icons/`, `fonts/`, `logo.png`, `brandmark.svg` — brand assets.\n\n## Run it\nOpen `index.html`, or serve the folder statically:\n\n```\npython3 -m http.server 8000\n```\n';
+    }
+    async function generateZip(){
+      if(dlBtn.disabled) return;
+      var orig = dlBtn.querySelector('.lbl').textContent;
+      dlBtn.disabled = true; dlLabel('Generating…');
+      try{
+        var fflate = await import('https://esm.sh/fflate@0.8.2?bundle');
+        var files = {};
+        files['index.html'] = await fetchU8('/index.html');
+        var extra = ['fonts/OneStreamSans-Regular.otf','fonts/OneStreamSans-Medium.otf','fonts/OneStreamSans-Bold.otf','logo.png','brandmark.svg'];
+        ICON_NAMES.forEach(function(n){ extra.push('assets/icons/'+n+'.svg'); extra.push('assets/icons/'+n+'-dark.svg'); });
+        for(var i=0;i<extra.length;i++){ files[extra[i]] = await fetchU8('/'+extra[i]); }
+        files['README.md'] = fflate.strToU8(dlReadme());
+        var zipped = fflate.zipSync(files, {level:6});
+        var blob = new Blob([zipped], {type:'application/zip'});
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a'); a.href = url; a.download = 'O365_Excel_AddIn_'+dlDate()+'.zip';
+        document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); }, 0);
+        dlLabel('Downloaded ✓'); setTimeout(function(){ dlLabel(orig); dlBtn.disabled = false; }, 1800);
+      }catch(err){ dlLabel('Failed — retry'); dlBtn.disabled = false; setTimeout(function(){ dlLabel(orig); }, 2400); }
+    }
+    if(dlBtn) dlBtn.addEventListener('click', generateZip);
 
     /* Dark mode toggle (persisted; defaults to OS preference) */
     var appEl = document.querySelector('.app'), darkRow = document.getElementById('dark-row'), darkSwitch = document.getElementById('dark-switch');
