@@ -102,24 +102,19 @@
   .cpop-actions .del{background:none;border:0;color:#C6243A;font:inherit;font-size:12px;font-weight:700;cursor:pointer;padding:0;}
   .cpop-actions .del:hover{text-decoration:underline;}
   .cpop-actions .done{background:var(--brand);color:#fff;border:0;border-radius:6px;font:inherit;font-size:12px;font-weight:700;padding:5px 12px;cursor:pointer;}
-  /* Review Tools: edit tools, download button, info card */
+  /* Review Tools: edit tools, info card */
   .dsb-scroll{display:flex;flex-direction:column;}
   .edit-tools{padding:2px 12px 8px 44px;}
   .etbtn{font:inherit;font-size:12px;font-weight:600;color:var(--ink,#2B2B27);background:#fff;border:1px solid var(--panel-line);border-radius:6px;padding:5px 9px;cursor:pointer;}
   .etbtn:hover{background:var(--panel-hover,#EAE9E2);}
   .edit-hint{font-size:11px;color:var(--muted);line-height:15px;margin-top:6px;}
   .save-status{color:var(--brand);font-weight:600;}
-  .dl-btn{display:inline-flex;align-self:flex-start;align-items:center;justify-content:center;gap:8px;margin:2px 12px 4px;height:34px;padding:0 16px;border:0;background:#5E5D57;color:#fff;border-radius:8px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .12s ease;}
-  .dl-btn:hover{background:#4C4B46;}
-  .dl-btn:disabled{opacity:.65;cursor:default;background:#5E5D57;}
-  .dsb-stamp,#dl-note{font-size:11px;color:var(--muted);}
-  #dl-note{padding:0 14px 4px 12px;margin-top:6px;line-height:15px;max-width:180px;}
   .info-card{margin:12px;margin-top:auto;background:#fff;border:1px solid var(--panel-line);border-radius:10px;padding:13px 14px;box-shadow:0 1px 3px rgba(20,20,20,.06);}
   .info-card .info-title{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);margin:0 0 9px;}
   .info-card .dsb-info{padding:0;font-size:12.5px;line-height:21px;}
   .info-card .dsb-info .k{flex:0 0 60px;}
   .info-card .dsb-info span:last-child{color:var(--ink-strong,#141414);font-weight:500;}
-  .dsb.collapsed .edit-tools,.dsb.collapsed .dl-btn,.dsb.collapsed #dl-note,.dsb.collapsed .info-card{display:none;}
+  .dsb.collapsed .edit-tools,.dsb.collapsed .info-card{display:none;}
 
   svg{display:block;}
   .ico{fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;}
@@ -333,9 +328,6 @@ try{ if(new URLSearchParams(location.search).has('bare')) document.documentEleme
         <button class="etbtn" id="add-note" type="button">＋ Add note</button>
         <div class="edit-hint">Drag a dot to move · click to edit · <span id="save-status" class="save-status"></span></div>
       </div>
-      <div class="dsb-cat">Downloads</div>
-      <button class="dl-btn" id="dl-latest" type="button"><span class="lbl">Download Latest</span></button>
-      <div class="dsb-stamp" id="dl-note">Bundles the live prototype code into a ZIP</div>
       <div class="info-card">
         <div class="info-title">Information</div>
         <div class="dsb-info">
@@ -841,37 +833,6 @@ try{ if(new URLSearchParams(location.search).has('bare')) document.documentEleme
       editRow.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); setEdit(!editMode); } });
       document.getElementById('add-note').addEventListener('click', function(){ placing = true; layer.classList.add('placing'); });
     }
-
-    /* Download Latest — zip the live prototype in the browser (no manual regen) */
-    var ICON_NAMES = ['addartifact','analysis','arrow_b','calculation','changeapp','convert','copypov','createquickview','cubeview','drilldown','fileexplorer','insheet','login','logout','parameters','pastepov','placeholder','preferences','quickview','refresh','saveoffline','savetoserver','selectmember','showpane','submit','tableview','taskactivity'];
-    var dlBtn = document.getElementById('dl-latest');
-    function dlLabel(t){ var s = dlBtn.querySelector('.lbl'); if(s) s.textContent = t; }
-    function dlDate(){ var d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-    function fetchU8(url){ return fetch(url,{cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error(url); return r.arrayBuffer(); }).then(function(b){ return new Uint8Array(b); }); }
-    function dlReadme(){
-      return '# OneStream 365 — Excel Add-In prototype\n\nSelf-contained HTML/CSS/JS prototype, generated ' + dlDate() + '.\n\n- `index.html` — the whole prototype. Add `?bare` to the URL to hide the UX review panel.\n- `assets/icons/`, `fonts/`, `logo.png`, `brandmark.svg` — brand assets.\n\n## Run it\nOpen `index.html`, or serve the folder statically:\n\n```\npython3 -m http.server 8000\n```\n';
-    }
-    async function generateZip(){
-      if(dlBtn.disabled) return;
-      var orig = dlBtn.querySelector('.lbl').textContent;
-      dlBtn.disabled = true; dlLabel('Generating…');
-      try{
-        var fflate = await import('https://esm.sh/fflate@0.8.2?bundle');
-        var files = {};
-        files['index.html'] = await fetchU8('/index.html');
-        var extra = ['fonts/OneStreamSans-Regular.otf','fonts/OneStreamSans-Medium.otf','fonts/OneStreamSans-Bold.otf','logo.png','brandmark.svg'];
-        ICON_NAMES.forEach(function(n){ extra.push('assets/icons/'+n+'.svg'); extra.push('assets/icons/'+n+'-dark.svg'); });
-        for(var i=0;i<extra.length;i++){ files[extra[i]] = await fetchU8('/'+extra[i]); }
-        files['README.md'] = fflate.strToU8(dlReadme());
-        var zipped = fflate.zipSync(files, {level:6});
-        var blob = new Blob([zipped], {type:'application/zip'});
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a'); a.href = url; a.download = 'O365_Excel_AddIn_'+dlDate()+'.zip';
-        document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); }, 0);
-        dlLabel('Downloaded ✓'); setTimeout(function(){ dlLabel(orig); dlBtn.disabled = false; }, 1800);
-      }catch(err){ dlLabel('Failed — retry'); dlBtn.disabled = false; setTimeout(function(){ dlLabel(orig); }, 2400); }
-    }
-    if(dlBtn) dlBtn.addEventListener('click', generateZip);
 
     /* Dark mode toggle (persisted; defaults to OS preference) */
     var appEl = document.querySelector('.app'), darkRow = document.getElementById('dark-row'), darkSwitch = document.getElementById('dark-switch');
