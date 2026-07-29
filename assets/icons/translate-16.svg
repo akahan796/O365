@@ -1,0 +1,17 @@
+<svg width="32" height="32" viewBox="-2.3832 -2.0000 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Content_STROKE">
+<path id="Vector" d="M23.5621 1.5107H3.67162C2.47818 1.5107 1.5107 2.47818 1.5107 3.67162V12.1189C1.5107 13.3123 2.47818 14.2798 3.67162 14.2798H23.5621C24.7556 14.2798 25.723 13.3123 25.723 12.1189V3.67162C25.723 2.47818 24.7556 1.5107 23.5621 1.5107Z" stroke="#373737" stroke-width="3.000" stroke-miterlimit="10"/>
+<g id="Group">
+<path id="Vector_2" d="M24.0156 22.5462H5.0335" stroke="#0A5DFF" stroke-width="3.000" stroke-miterlimit="10" stroke-linecap="round"/>
+<g id="Group_2">
+<path id="Vector_3" d="M25.6743 22.4079L21.8676 18.6012" stroke="#0A5DFF" stroke-width="3.000" stroke-miterlimit="10" stroke-linecap="round"/>
+<path id="Vector_4" d="M25.6743 22.6826L21.8676 26.4893" stroke="#0A5DFF" stroke-width="3.000" stroke-miterlimit="10" stroke-linecap="round"/>
+</g>
+<g id="Group_3">
+<path id="Vector_5" d="M1.5587 22.6826L5.3654 26.4893" stroke="#0A5DFF" stroke-width="3.000" stroke-miterlimit="10" stroke-linecap="round"/>
+<path id="Vector_6" d="M1.55889 22.4079L5.36559 18.6012" stroke="#0A5DFF" stroke-width="3.000" stroke-miterlimit="10" stroke-linecap="round"/>
+</g>
+</g>
+<path id="Vector_7" d="M13.7253 11.3579C15.6939 11.3579 17.2898 9.76203 17.2898 7.79341C17.2898 5.8248 15.6939 4.22892 13.7253 4.22892C11.7567 4.22892 10.1608 5.8248 10.1608 7.79341C10.1608 9.76203 11.7567 11.3579 13.7253 11.3579Z" fill="#0A5DFF"/>
+</g>
+</svg>
