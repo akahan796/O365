@@ -1,13 +1,11 @@
-<svg width="32" height="32" viewBox="-2.0000 -2.0000 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="32" height="32" viewBox="-1.9844 -2.1872 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Content_STROKE">
-<path id="Vector" d="M22.7025 1.06957H5.29748C2.96247 1.06957 1.06957 2.96247 1.06957 5.29748V22.7025C1.06957 25.0375 2.96247 26.9304 5.29748 26.9304H22.7025C25.0375 26.9304 26.9304 25.0375 26.9304 22.7025V5.29748C26.9304 2.96247 25.0375 1.06957 22.7025 1.06957Z" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10"/>
+<path id="Vector" d="M20.5955 3.20039H4.82972C2.71462 3.20039 1 4.91501 1 7.03011V22.7959C1 24.911 2.71462 26.6256 4.82972 26.6256H20.5955C22.7106 26.6256 24.4252 24.911 24.4252 22.7959V7.03011C24.4252 4.91501 22.7106 3.20039 20.5955 3.20039Z" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10"/>
 <g id="Group">
-<path id="Vector_2" d="M9.72059 2.00259V26.2563" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10"/>
-<path id="Vector_3" d="M18.2794 1.64825V26.4202" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10"/>
+<path id="Vector_2" d="M8.83627 10.8954V26.0609" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10"/>
+<path id="Vector_3" d="M16.589 10.6737V26.1633" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10"/>
 </g>
-<g id="Group_2">
-<path id="Vector_4" d="M1.02039 18.2794H26.4724" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10"/>
-<path id="Vector_5" d="M1.27835 9.72069H26.6444" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10"/>
-</g>
+<path id="Vector_4" d="M0.955454 18.7894H24.0103" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10"/>
+<path id="Vector_5" d="M1.18912 11.0367H24.1661" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10"/>
 </g>
 </svg>
