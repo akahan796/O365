@@ -303,6 +303,47 @@
   .app.dark .grid-wrap::-webkit-scrollbar{width:16px;height:16px;}
   .app.dark .grid-wrap::-webkit-scrollbar-thumb{background:#3f3f3f;border:4px solid #1e1e1e;border-radius:8px;}
   .app.dark .grid-wrap::-webkit-scrollbar-track{background:#1e1e1e;}
+  /* ===================== FONTS / ICON GALLERY ===================== */
+  #fonts-view{position:absolute;inset:0;z-index:60;background:#fff;display:none;flex-direction:column;font-family:'OneStream Sans',Arial,sans-serif;color:#1f1f1f;}
+  #fonts-view.show{display:flex;}
+  .fonts-top{flex:0 0 auto;padding:22px 32px 16px;border-bottom:1px solid #ececec;}
+  .fonts-h{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+  .fonts-logo{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,#0A5DFF,#4d8bff);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;flex:0 0 28px;}
+  .fonts-title{font-size:20px;font-weight:600;color:#202124;}
+  .fonts-sub{font-size:12.5px;color:#80868b;margin-left:auto;}
+  .fonts-search{display:flex;align-items:center;gap:12px;height:48px;padding:0 18px;background:#eef2fb;border-radius:26px;}
+  .fonts-search svg{width:18px;height:18px;color:#5f6368;flex:0 0 18px;}
+  .fonts-search input{border:0;background:none;outline:none;font-size:15px;width:100%;color:#1f1f1f;font-family:inherit;}
+  .fonts-body{flex:1;overflow-y:auto;padding:4px 32px 60px;}
+  .fgroup{margin-top:26px;}
+  .fgroup-t{font-size:13px;color:#5f6368;font-weight:600;margin:0 0 6px 8px;}
+  .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(116px,1fr));gap:4px;}
+  .ficon{display:flex;flex-direction:column;align-items:center;gap:14px;padding:22px 8px 14px;border:0;background:none;border-radius:12px;cursor:pointer;font-family:inherit;transition:background .12s;}
+  .ficon:hover{background:#f1f3f4;}
+  .ficon.sel{background:#e8f0fe;}
+  .ficon img{width:32px;height:32px;pointer-events:none;}
+  .fname{font-size:12px;color:#3c4043;text-align:center;line-height:1.25;}
+  .fempty{padding:70px 20px;text-align:center;color:#9aa0a6;font-size:14px;}
+  #font-panel{position:absolute;top:0;right:0;bottom:0;width:342px;max-width:80%;background:#fff;border-left:1px solid #e6e6e6;box-shadow:-10px 0 34px rgba(0,0,0,.10);transform:translateX(102%);transition:transform .22s ease;display:flex;flex-direction:column;z-index:5;}
+  #font-panel.open{transform:translateX(0);}
+  .fp-head{display:flex;align-items:center;gap:8px;padding:16px 10px 16px 22px;border-bottom:1px solid #eee;}
+  .fp-name{flex:1;font-size:16px;font-weight:600;color:#202124;}
+  .fp-x{width:34px;height:34px;border:0;background:none;border-radius:7px;cursor:pointer;color:#5f6368;display:flex;align-items:center;justify-content:center;flex:0 0 34px;}
+  .fp-x:hover{background:#f1f3f4;}
+  .fp-x svg{width:20px;height:20px;}
+  .fp-body{padding:24px 22px;overflow-y:auto;}
+  .fp-preview{height:156px;border:1px solid #eee;border-radius:14px;display:flex;align-items:center;justify-content:center;background:#fafafa;margin-bottom:14px;}
+  .fp-preview img{width:72px;height:72px;}
+  .fp-sizes{display:flex;justify-content:center;align-items:flex-end;gap:22px;margin-bottom:26px;}
+  .fp-sizes .s{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11px;color:#80868b;}
+  .fp-dl-t{font-size:12px;color:#5f6368;font-weight:600;margin-bottom:10px;text-transform:uppercase;letter-spacing:.4px;}
+  .fp-dl{display:flex;flex-direction:column;gap:8px;}
+  .fp-btn{display:flex;align-items:center;justify-content:space-between;height:46px;padding:0 16px;border:1px solid #dadce0;background:#fff;border-radius:9px;font-size:14px;color:#202124;cursor:pointer;font-family:inherit;}
+  .fp-btn:hover{background:#f7f8fa;border-color:#c6c9cd;}
+  .fp-btn .d{color:#1a73e8;font-weight:600;font-size:13px;}
+  .fp-btn.primary{background:#0A5DFF;border-color:#0A5DFF;color:#fff;}
+  .fp-btn.primary .d{color:#dbe7ff;}
+  .fp-btn.primary:hover{background:#0a52e0;}
 </style>
 <script>/* bare mode: ?bare hides the review panel so only the prototype shows */
 try{ if(new URLSearchParams(location.search).has('bare')) document.documentElement.classList.add('bare'); }catch(e){}</script>
@@ -321,6 +362,7 @@ try{ if(new URLSearchParams(location.search).has('bare')) document.documentEleme
       <button class="dsb-item nav active" data-view="default"><span class="ic" data-ic="screen"></span><span class="lbl">Default Ribbon</span></button>
       <button class="dsb-item nav" data-view="quickviews"><span class="ic" data-ic="screen"></span><span class="lbl">Quick Views</span></button>
       <div class="dsb-cat">Review Tools</div>
+      <button class="dsb-item" id="fonts-nav" aria-label="Open icon library"><span class="ic" data-ic="apps"></span><span class="lbl">Fonts</span></button>
       <div class="dsb-item dsb-toggle" id="ux-notes-row" role="button" tabindex="0" aria-label="Toggle UX Notes"><span class="ic" data-ic="note"></span><span class="lbl">UX Notes</span><span class="switch on" id="ux-notes-switch" role="switch" aria-checked="true"><span class="knob"></span></span></div>
       <div class="dsb-item dsb-toggle" id="dark-row" role="button" tabindex="0" aria-label="Toggle dark mode"><span class="ic" data-ic="dark"></span><span class="lbl">Dark mode</span><span class="switch" id="dark-switch" role="switch" aria-checked="false"><span class="knob"></span></span></div>
       <div class="dsb-item dsb-toggle" id="edit-notes-row" role="button" tabindex="0" aria-label="Toggle edit mode" hidden><span class="ic" data-ic="edit"></span><span class="lbl">Edit notes</span><span class="switch" id="edit-notes-switch" role="switch" aria-checked="false"><span class="knob"></span></span></div>
@@ -659,6 +701,38 @@ try{ if(new URLSearchParams(location.search).has('bare')) document.documentEleme
   </div>
 
 </div>
+    <!-- ===================== FONTS / ICON GALLERY ===================== -->
+    <div id="fonts-view">
+      <div class="fonts-top">
+        <div class="fonts-h">
+          <span class="fonts-logo">OS</span>
+          <span class="fonts-title">Icon Library</span>
+          <span class="fonts-sub" id="fonts-count"></span>
+        </div>
+        <div class="fonts-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+          <input id="fonts-search-input" type="text" placeholder="Search icons" autocomplete="off" spellcheck="false">
+        </div>
+      </div>
+      <div class="fonts-body" id="fonts-grid"></div>
+      <div id="font-panel">
+        <div class="fp-head">
+          <span class="fp-name" id="fp-name">Icon</span>
+          <button class="fp-x" id="fp-x" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+        <div class="fp-body">
+          <div class="fp-preview" id="fp-preview"></div>
+          <div class="fp-sizes" id="fp-sizes"></div>
+          <div class="fp-dl-t">Download</div>
+          <div class="fp-dl" id="fp-dl">
+            <button class="fp-btn primary" data-dl="svg">SVG <span class="d">Vector ↓</span></button>
+            <button class="fp-btn" data-dl="32">PNG · 32px <span class="d">↓</span></button>
+            <button class="fp-btn" data-dl="24">PNG · 24px <span class="d">↓</span></button>
+            <button class="fp-btn" data-dl="16">PNG · 16px <span class="d">↓</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="comment-layer" id="comment-layer"></div>
   </main>
 </div>
@@ -726,6 +800,7 @@ try{ if(new URLSearchParams(location.search).has('bare')) document.documentEleme
       link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg>',
       dark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
       edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+      apps:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="5" r="1.9"/><circle cx="12" cy="5" r="1.9"/><circle cx="19" cy="5" r="1.9"/><circle cx="5" cy="12" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="19" cy="12" r="1.9"/><circle cx="5" cy="19" r="1.9"/><circle cx="12" cy="19" r="1.9"/><circle cx="19" cy="19" r="1.9"/></svg>',
     };
     var COMMENT_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C7 4 3 7.1 3 11c0 1.9 1 3.6 2.6 4.9L5 20l4.4-2.2c.83.2 1.7.3 2.6.3 5 0 9-3.1 9-7s-4-7-9-7z"/></svg>';
     function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
@@ -886,6 +961,136 @@ try{ if(new URLSearchParams(location.search).has('bare')) document.documentEleme
     darkRow.addEventListener('click', function(){ setDark(!darkSwitch.classList.contains('on')); });
     darkRow.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); setDark(!darkSwitch.classList.contains('on')); } });
     setDark((function(){ try{ var v=localStorage.getItem('o365_dark'); return v===null ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) : v==='1'; }catch(_){ return false; } })());
+  })();
+
+  /* ===================== FONTS / ICON LIBRARY ===================== */
+  (function(){
+    var GROUPS = [
+      ['Access', [['login','Log In'],['logout','Log Out'],['changeapp','Change Application']]],
+      ['Explore', [['cubeview','Cube View'],['quickview','Quick View'],['tableview','Table View']]],
+      ['Data', [['refreshsheet','Refresh Sheet'],['refreshworkbook','Refresh Workbook'],['refresh','Refresh'],['consolidate','Consolidate'],['translate','Translate'],['calculate','Calculate'],['calculation','Calculation'],['submitsheet','Submit Sheet'],['submitworkbook','Submit Workbook'],['submit','Submit']]],
+      ['Analysis', [['copypov','Copy POV from Data Cell'],['pastepov','Paste POV as XFGetCell'],['createquickview','Create Quick View from Data Cell'],['drilldown','Drill Down'],['convert','Convert to XFGetCells']]],
+      ['File Operations', [['fileexplorer','File Explorer'],['savetoserver','Save to Server'],['saveoffline','Save Offline Copy']]],
+      ['General', [['parameters','Parameters'],['insheet','In-Sheet Actions'],['preferences','Preferences'],['selectmember','Select Member'],['taskactivity','Task Activity'],['showpane','Show']]],
+      ['Manage Members', [['keeponly','Keep Only'],['removeonly','Remove Only'],['nextlevel','Next Level'],['topofhierarchy','Top of Hierarchy'],['parents','Parents'],['children','Children'],['base','Base']]],
+      ['Manage Quick Views', [['add','Add'],['copy','Copy'],['paste','Paste'],['delete','Delete'],['options','Options'],['undo','Undo'],['redo','Redo']]],
+      ['Layout', [['advancedlayouts','Advanced Layouts']]]
+    ];
+    var view = document.getElementById('fonts-view');
+    var grid = document.getElementById('fonts-grid');
+    var panel = document.getElementById('font-panel');
+    var searchInput = document.getElementById('fonts-search-input');
+    var countEl = document.getElementById('fonts-count');
+    var navBtn = document.getElementById('fonts-nav');
+    if(!view || !navBtn) return;
+    var total = GROUPS.reduce(function(n,g){ return n + g[1].length; }, 0);
+
+    /* build grid */
+    var html = '';
+    GROUPS.forEach(function(g){
+      html += '<div class="fgroup" data-group="'+g[0]+'"><div class="fgroup-t">'+g[0]+'</div><div class="fgrid">';
+      g[1].forEach(function(it){
+        html += '<button class="ficon" data-name="'+it[0]+'" data-label="'+it[1].replace(/"/g,'&quot;')+'">'
+             +  '<img src="assets/icons/'+it[0]+'.svg" alt="" loading="lazy"><span class="fname">'+it[1]+'</span></button>';
+      });
+      html += '</div></div>';
+    });
+    grid.innerHTML = html;
+    countEl.textContent = total + ' icons';
+
+    /* search filter */
+    searchInput.addEventListener('input', function(){
+      var q = searchInput.value.trim().toLowerCase();
+      var shown = 0;
+      grid.querySelectorAll('.fgroup').forEach(function(gr){
+        var any = 0;
+        gr.querySelectorAll('.ficon').forEach(function(b){
+          var hit = !q || b.dataset.label.toLowerCase().indexOf(q) > -1 || b.dataset.name.indexOf(q) > -1;
+          b.style.display = hit ? '' : 'none';
+          if(hit){ any++; shown++; }
+        });
+        gr.style.display = any ? '' : 'none';
+      });
+      var e = grid.querySelector('.fempty'); if(e) e.remove();
+      if(!shown){ var d = document.createElement('div'); d.className='fempty'; d.textContent='No icons match “'+searchInput.value+'”'; grid.appendChild(d); }
+      countEl.textContent = (q ? shown : total) + ' icons';
+    });
+
+    /* open / close gallery */
+    function openFonts(){
+      view.classList.add('show');
+      navBtn.classList.add('active');
+      document.querySelectorAll('.dsb-item.nav').forEach(function(b){ b.classList.remove('active'); });
+    }
+    function closeFonts(){
+      view.classList.remove('show');
+      navBtn.classList.remove('active');
+      closePanel();
+      var cur = location.pathname === '/quickviews' ? 'quickviews' : 'default';
+      document.querySelectorAll('.dsb-item.nav').forEach(function(b){ b.classList.toggle('active', b.dataset.view===cur); });
+    }
+    navBtn.addEventListener('click', openFonts);
+    /* leaving Fonts when navigating to a screen */
+    document.querySelectorAll('.dsb-item.nav').forEach(function(b){ b.addEventListener('click', closeFonts); });
+    ['tab-os','tab-qv','btn-quickview'].forEach(function(id){ var el=document.getElementById(id); if(el) el.addEventListener('click', closeFonts); });
+
+    /* slide-out download panel */
+    var fpName = document.getElementById('fp-name');
+    var fpPrev = document.getElementById('fp-preview');
+    var fpSizes = document.getElementById('fp-sizes');
+    var current = null;
+    function openPanel(name, label){
+      current = name;
+      fpName.textContent = label;
+      fpPrev.innerHTML = '<img src="assets/icons/'+name+'.svg" alt="">';
+      fpSizes.innerHTML = [32,24,16].map(function(s){
+        return '<div class="s"><img src="assets/icons/'+name+'.svg" style="width:'+s+'px;height:'+s+'px"><span>'+s+'px</span></div>';
+      }).join('');
+      panel.classList.add('open');
+    }
+    function closePanel(){
+      panel.classList.remove('open');
+      grid.querySelectorAll('.ficon.sel').forEach(function(b){ b.classList.remove('sel'); });
+    }
+    grid.addEventListener('click', function(e){
+      var b = e.target.closest('.ficon'); if(!b) return;
+      grid.querySelectorAll('.ficon.sel').forEach(function(x){ x.classList.remove('sel'); });
+      b.classList.add('sel');
+      openPanel(b.dataset.name, b.dataset.label);
+    });
+    document.getElementById('fp-x').addEventListener('click', closePanel);
+
+    /* downloads */
+    function trigger(blob, fname){
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = fname;
+      document.body.appendChild(a); a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 200);
+    }
+    function dlSVG(name){
+      fetch('assets/icons/'+name+'.svg').then(function(r){ return r.text(); })
+        .then(function(t){ trigger(new Blob([t], {type:'image/svg+xml'}), name+'.svg'); });
+    }
+    function dlPNG(name, size){
+      var img = new Image();
+      img.onload = function(){
+        var c = document.createElement('canvas'); c.width = size; c.height = size;
+        var ctx = c.getContext('2d'); ctx.clearRect(0,0,size,size);
+        ctx.drawImage(img, 0, 0, size, size);
+        c.toBlob(function(blob){ trigger(blob, name+'-'+size+'px.png'); }, 'image/png');
+      };
+      img.src = 'assets/icons/'+name+'.svg';
+    }
+    document.getElementById('fp-dl').addEventListener('click', function(e){
+      var btn = e.target.closest('.fp-btn'); if(!btn || !current) return;
+      var k = btn.dataset.dl;
+      if(k === 'svg') dlSVG(current); else dlPNG(current, parseInt(k,10));
+    });
+    /* Esc closes panel then gallery */
+    document.addEventListener('keydown', function(e){
+      if(e.key !== 'Escape' || !view.classList.contains('show')) return;
+      if(panel.classList.contains('open')) closePanel(); else closeFonts();
+    });
   })();
 </script>
 </body>
