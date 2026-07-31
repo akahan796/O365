@@ -1,15 +1,12 @@
-<svg width="32" height="32" viewBox="-2.0000 -2.0046 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="Content_STROKE">
-<path id="Vector" d="M26.9217 22.6952C26.9217 25.0294 25.0294 26.9217 22.6952 26.9217H5.29576C2.96151 26.9217 1.06922 25.0294 1.06922 22.6952V5.29576C1.06922 2.96151 2.96151 1.06922 5.29576 1.06922H22.6952C25.0294 1.06922 26.9217 2.96151 26.9217 5.29576V13.8541" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
-<path id="Vector_2" d="M9.71748 9.28585V26.2966" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10"/>
-<g id="Group">
-<path id="Vector_3" d="M1.02003 18.2734H9.88639" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10"/>
-<path id="Vector_4" d="M1.27793 9.71744H26.6358" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10"/>
+<svg width="32" height="32" viewBox="-2.0000 -2.1371 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Content_STROKE" clip-path="url(#clip0_0_4)">
+<path id="Vector" d="M25.8592 25.5848H2.14084" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
+<path id="Vector_2" d="M3.53197 21.0884C3.82778 21.0884 4.09277 21.0083 4.32693 20.8482C4.56072 20.6881 4.73137 20.4682 4.83811 20.1891L6.55056 15.5927H15.6443L17.3079 20.1521C17.415 20.4479 17.5917 20.6778 17.8382 20.8418C18.0844 21.0063 18.3558 21.0884 18.6512 21.0884C19.1361 21.0884 19.5199 20.8873 19.8033 20.4848C20.0867 20.0822 20.1382 19.6509 19.9574 19.191L13.0448 1.34821C12.9215 1.05259 12.7388 0.818427 12.4964 0.645905C12.254 0.473382 11.9807 0.38712 11.677 0.38712H10.4942C10.1984 0.38712 9.92736 0.473382 9.68079 0.645905C9.43422 0.818427 9.24929 1.05259 9.12601 1.34821L2.22583 19.154C2.04504 19.6139 2.0924 20.0514 2.36754 20.4663C2.64267 20.8811 3.03094 21.0884 3.53197 21.0884ZM11.0114 3.51716H11.1595L14.6836 13.0546H7.48722L11.0114 3.51716Z" fill="#84AEFF"/>
+<path id="Vector_3" d="M25.0123 0.713612V20.2254" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
 </g>
-<g id="Group_2">
-<path id="Vector_5" d="M13.8564 18.2527H26.8756" stroke="#84AEFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Vector_6" d="M22.166 13.5209L26.9309 18.1975" stroke="#84AEFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Vector_7" d="M22.2102 23.0064L26.8868 18.2416" stroke="#84AEFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</g>
-</g>
+<defs>
+<clipPath id="clip0_0_4">
+<rect width="28" height="27.7258" fill="#2B2B2B"/>
+</clipPath>
+</defs>
 </svg>
