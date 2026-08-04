@@ -50,7 +50,6 @@
   <div class="wrap">
     <div class="head">
       <h1 id="portal-title">UX Review Portal</h1>
-      <p class="updated">Last updated: <span id="updated"></span></p>
     </div>
     <div class="tiles" id="tiles"></div>
     <div class="foot">
@@ -84,7 +83,6 @@
 
   document.getElementById('portal-title').textContent = PORTAL_TITLE;
   document.title = PORTAL_TITLE;
-  document.getElementById('updated').textContent = LAST_UPDATED;
 
   function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
 
