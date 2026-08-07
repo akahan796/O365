@@ -44,6 +44,12 @@
     text-decoration:none;padding:8px 14px;border-radius:6px;transition:color .15s ease,background .15s ease;}
   .signout:hover{color:var(--text);background:rgba(20,30,60,.05);}
   .signout svg{width:16px;height:16px;}
+  /* Admin-only: link back to the master UX portal (shown when role=editor) */
+  .backlink{display:none;align-items:center;gap:7px;font-size:13px;font-weight:600;color:#0A5DFF;
+    text-decoration:none;padding:8px 14px;border-radius:6px;transition:background .15s ease;margin:0 auto 6px;}
+  .backlink:hover{background:rgba(10,93,255,.08);}
+  .backlink svg{width:16px;height:16px;}
+  .backlink.show{display:inline-flex;}
 </style>
 </head>
 <body>
@@ -53,6 +59,10 @@
     </div>
     <div class="tiles" id="tiles"></div>
     <div class="foot">
+      <div><a class="backlink" id="admin-back" href="https://portal-seven-sandy.vercel.app/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        Back to main UX portal
+      </a></div>
       <a class="signout" href="/api/logout">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
         Sign out
@@ -114,6 +124,13 @@
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done).catch(fallback);
     else fallback();
   });
+</script>
+<script>
+  /* Reveal the "Back to main UX portal" link only for admin/editor sessions. */
+  (function(){
+    var m = document.cookie.match(/(?:^|;\s*)(?:esg|lcm|o365|lim)_role=([^;]+)/);
+    if (m && m[1] === 'editor') { var el = document.getElementById('admin-back'); if (el) el.classList.add('show'); }
+  })();
 </script>
 </body>
 </html>
