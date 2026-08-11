@@ -736,8 +736,8 @@ try{ if(new URLSearchParams(location.search).has('bare')) document.documentEleme
           <div class="fp-dl-t">Download</div>
           <div class="fp-dl" id="fp-dl">
             <button class="fp-btn primary" data-dl="svg">SVG <span class="d">Vector ↓</span></button>
+            <button class="fp-btn" data-dl="80">PNG · 80px <span class="d">↓</span></button>
             <button class="fp-btn" data-dl="32">PNG · 32px <span class="d">↓</span></button>
-            <button class="fp-btn" data-dl="24">PNG · 24px <span class="d">↓</span></button>
             <button class="fp-btn" data-dl="16">PNG · 16px <span class="d">↓</span></button>
           </div>
         </div>
@@ -986,6 +986,23 @@ try{ if(new URLSearchParams(location.search).has('bare')) document.documentEleme
       ['Manage Quick Views', [['add','Add'],['copy','Copy'],['paste','Paste'],['delete','Delete'],['options','Options'],['undo','Undo'],['redo','Redo']]],
       ['Layout', [['advancedlayouts','Advanced Layouts']]]
     ];
+    /* Proper export names (match the Figma icon boards) used for download filenames */
+    var XNAME = {
+      login:'Log_In_Icon', logout:'Log_Out_Icon', changeapp:'Change_Application_Icon',
+      cubeview:'Cube_Views_Icon', quickview:'Quick_Views_Icon', tableview:'Table_Views_Icon',
+      refreshsheet:'Refresh_Sheet_Icon', refreshworkbook:'Refresh_Workbook_Icon', refresh:'Refresh_Icon',
+      consolidate:'Consolidate_Icon', translate:'Translate_Icon', calculate:'Calculate_Icon', calculation:'Calculation_Icon',
+      submitsheet:'Submit_Sheet_Icon', submitworkbook:'Submit_Workbook_Icon', submit:'Submit_Icon',
+      copypov:'Copy_POV_From_Data_Cell_Icon', pastepov:'Paste_POV_As_XFGetCell_Icon', createquickview:'Create_Quick_View_Using_POV_Icon',
+      drilldown:'Drill_Down_Icon', convert:'XF_Convert_Icon',
+      fileexplorer:'File_Explorer_Icon', savetoserver:'Save_To_Server_Icon', saveoffline:'Save_Offline_Copy_Icon',
+      parameters:'Parameters_Icon', insheet:'InSheetActions_Icon', preferences:'Preferences_Icon',
+      selectmember:'Select_Member_Icon', taskactivity:'Task_Activity_Icon', showpane:'Pane_View_Icon',
+      keeponly:'Keep_Only_Icon', removeonly:'Remove_Only_Icon', nextlevel:'Next_Level_Icon',
+      topofhierarchy:'Go_To_Top_Of_Hierarchy_Icon', parents:'Parents_Icon', children:'Children_Icon', base:'Base_Icon',
+      add:'Add_Icon', copy:'Copy_Quick_View_Icon', paste:'Paste_Quick_View_Icon', delete:'Delete_Quick_View_Icon',
+      options:'Options_Icon', undo:'Undo_Icon', redo:'Redo_Icon', advancedlayouts:'Advanced_Layouts_Icon'
+    };
     var view = document.getElementById('fonts-view');
     var grid = document.getElementById('fonts-grid');
     var panel = document.getElementById('font-panel');
@@ -1057,7 +1074,7 @@ try{ if(new URLSearchParams(location.search).has('bare')) document.documentEleme
       fpPrev.classList.toggle('dark', isD);
       fpSizes.classList.toggle('dark', isD);
       fpPrev.innerHTML = '<img src="assets/icons/'+f+'.svg" alt="">';
-      fpSizes.innerHTML = [32,24,16].map(function(s){
+      fpSizes.innerHTML = [80,32,16].map(function(s){
         return '<div class="s"><img src="assets/icons/'+f+'.svg" style="width:'+s+'px;height:'+s+'px"><span>'+s+'px</span></div>';
       }).join('');
     }
@@ -1092,24 +1109,31 @@ try{ if(new URLSearchParams(location.search).has('bare')) document.documentEleme
       document.body.appendChild(a); a.click();
       setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 200);
     }
-    function dlSVG(name){
-      fetch('assets/icons/'+name+'.svg').then(function(r){ return r.text(); })
-        .then(function(t){ trigger(new Blob([t], {type:'image/svg+xml'}), name+'.svg'); });
+    /* download filename: ProperName[.Dark][.WxW].ext  e.g. Log_In_Icon.80x80.png */
+    function dlName(ext, size){
+      var base = XNAME[current] || current;
+      var modePart = (mode === 'dark') ? '.Dark' : '';
+      var sizePart = size ? ('.'+size+'x'+size) : '';
+      return base + modePart + sizePart + '.' + ext;
     }
-    function dlPNG(name, size){
+    function dlSVG(){
+      fetch('assets/icons/'+fileFor()+'.svg').then(function(r){ return r.text(); })
+        .then(function(t){ trigger(new Blob([t], {type:'image/svg+xml'}), dlName('svg', null)); });
+    }
+    function dlPNG(size){
       var img = new Image();
       img.onload = function(){
         var c = document.createElement('canvas'); c.width = size; c.height = size;
         var ctx = c.getContext('2d'); ctx.clearRect(0,0,size,size);
         ctx.drawImage(img, 0, 0, size, size);
-        c.toBlob(function(blob){ trigger(blob, name+'-'+size+'px.png'); }, 'image/png');
+        c.toBlob(function(blob){ trigger(blob, dlName('png', size)); }, 'image/png');
       };
-      img.src = 'assets/icons/'+name+'.svg';
+      img.src = 'assets/icons/'+fileFor()+'.svg';
     }
     document.getElementById('fp-dl').addEventListener('click', function(e){
       var btn = e.target.closest('.fp-btn'); if(!btn || !current) return;
       var k = btn.dataset.dl;
-      if(k === 'svg') dlSVG(fileFor()); else dlPNG(fileFor(), parseInt(k,10));
+      if(k === 'svg') dlSVG(); else dlPNG(parseInt(k,10));
     });
     /* Esc closes panel then gallery */
     document.addEventListener('keydown', function(e){
