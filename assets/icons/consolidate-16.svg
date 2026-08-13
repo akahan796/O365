@@ -1,13 +1,10 @@
 <svg width="32" height="32" viewBox="-2.0000 -2.1431 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Content_STROKE">
-<path id="Vector" d="M3.72016 27.7138C5.77475 27.7138 7.44032 26.0483 7.44032 23.9937C7.44032 21.9391 5.77475 20.2735 3.72016 20.2735C1.66557 20.2735 0 21.9391 0 23.9937C0 26.0483 1.66557 27.7138 3.72016 27.7138Z" fill="#0A5DFF"/>
-<path id="Vector_2" d="M24.2795 27.7138C26.3341 27.7138 27.9997 26.0483 27.9997 23.9937C27.9997 21.9391 26.3341 20.2735 24.2795 20.2735C22.225 20.2735 20.5594 21.9391 20.5594 23.9937C20.5594 26.0483 22.225 27.7138 24.2795 27.7138Z" fill="#0A5DFF"/>
-<path id="Vector_3" d="M14.0383 27.7138C16.0929 27.7138 17.7585 26.0483 17.7585 23.9937C17.7585 21.9391 16.0929 20.2735 14.0383 20.2735C11.9838 20.2735 10.3182 21.9391 10.3182 23.9937C10.3182 26.0483 11.9838 27.7138 14.0383 27.7138Z" fill="#0A5DFF"/>
 <path id="Vector_4" d="M14.0392 3.30809V17.0944" stroke="#373737" stroke-width="3.000" stroke-linecap="round" stroke-linejoin="round"/>
 <path id="Vector_5" d="M3.93553 12.8479V17.0947" stroke="#373737" stroke-width="3.000" stroke-linecap="round" stroke-linejoin="round"/>
 <path id="Vector_6" d="M24.1428 12.8479V17.0947" stroke="#373737" stroke-width="3.000" stroke-linecap="round" stroke-linejoin="round"/>
 <path id="Vector_7" d="M24.1654 12.4212H3.93553" stroke="#373737" stroke-width="3.000" stroke-linecap="round" stroke-linejoin="round"/>
 <path id="Vector_8" d="M13.8949 1.57667L9.92196 5.54962" stroke="#373737" stroke-width="3.000" stroke-linecap="round" stroke-linejoin="round"/>
 <path id="Vector_9" d="M14.1819 1.57667L18.1548 5.54962" stroke="#373737" stroke-width="3.000" stroke-linecap="round" stroke-linejoin="round"/>
-</g>
+<circle cx="3.72016" cy="23.9937" r="2.42" fill="#0A5DFF"/><circle cx="14.0383" cy="23.9937" r="2.42" fill="#0A5DFF"/><circle cx="24.2795" cy="23.9937" r="2.42" fill="#0A5DFF"/></g>
 </svg>
