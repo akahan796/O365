@@ -1,12 +1,13 @@
-<svg width="32" height="32" viewBox="-2.0000 -5.3090 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="32" height="32" viewBox="-2.000 -5.309 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Content_STROKE">
 <path id="Vector" d="M14.0228 1.77575H26.5288" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
-<path id="Vector_2" d="M14.0228 10.8434H26.5288" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
-<path id="Vector_3" d="M14.0228 19.9109H26.5288" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
+<path id="Vector_2" d="M10.3485 1.77575H26.5289" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
+<path id="Vector_3" d="M10.9406 10.8433H26.5288" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
+<path id="Vector_4" d="M11.3775 19.9109H26.5288" stroke="#D4D4D4" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
 <g id="Group">
-<path id="Vector_4" d="M5.25036 1.47115V19.7886" stroke="#84AEFF" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
-<path id="Vector_5" d="M9.08443 15.805L5.31909 19.8575" stroke="#84AEFF" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
-<path id="Vector_6" d="M1.47115 15.805L5.23649 19.8575" stroke="#84AEFF" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
+<path id="Vector_5" d="M5.25024 1.47115V19.7886" stroke="#84AEFF" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
+<path id="Vector_6" d="M9.08455 15.805L5.31921 19.8575" stroke="#84AEFF" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
+<path id="Vector_7" d="M1.47115 15.805L5.23649 19.8575" stroke="#84AEFF" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
 </g>
 </g>
 </svg>
