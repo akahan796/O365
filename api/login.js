@@ -20,15 +20,27 @@ export default async function handler(request) {
   }
 
   let password = '';
+  let next = '';
   try {
     const ct = request.headers.get('content-type') || '';
     if (ct.includes('application/json')) {
-      password = (await request.json()).password || '';
+      const body = await request.json();
+      password = body.password || '';
+      next = body.next || '';
     } else {
       const form = await request.formData();
       password = form.get('password') || '';
+      next = form.get('next') || '';
     }
   } catch (e) { /* ignore malformed body */ }
+  // Fall back to a ?next= query param if present.
+  next = next || new URL(request.url).searchParams.get('next') || '';
+
+  // Only allow a safe, same-origin relative path (blocks open-redirects).
+  function safeNext(n) {
+    if (typeof n === 'string' && /^\/[^/\\]/.test(n) && !n.startsWith('/login.html') && !n.startsWith('/api/')) return n;
+    return REDIRECT_AFTER_LOGIN;
+  }
 
   const token = process.env.SESSION_TOKEN;
   const viewerPw = process.env.ACCESS_PASSWORD;   // standard reviewer login
@@ -39,7 +51,7 @@ export default async function handler(request) {
   else if (viewerPw && password === viewerPw) role = 'viewer';
 
   if (token && role) {
-    const headers = new Headers({ 'Location': origin + REDIRECT_AFTER_LOGIN, 'Cache-Control': 'no-store' });
+    const headers = new Headers({ 'Location': origin + safeNext(next), 'Cache-Control': 'no-store' });
     headers.append('Set-Cookie', `${COOKIE_NAME}=${token}; Path=/; HttpOnly; Secure; SameSite=Lax`);
     // Readable role hint (UI only) + HttpOnly write-gate for the shared notes store.
     headers.append('Set-Cookie', `o365_role=${role}; Path=/; Secure; SameSite=Lax`);
@@ -52,8 +64,10 @@ export default async function handler(request) {
     return new Response(null, { status: 303, headers });
   }
 
+  const errLoc = '/login.html?e=1' +
+    (/^\/[^/\\]/.test(next) ? '&next=' + encodeURIComponent(next) : '');
   return new Response(null, {
     status: 303,
-    headers: { 'Location': origin + '/login.html?e=1', 'Cache-Control': 'no-store' },
+    headers: { 'Location': origin + errLoc, 'Cache-Control': 'no-store' },
   });
 }

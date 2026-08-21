@@ -48,11 +48,16 @@
              autocomplete="current-password" aria-label="Password" autofocus required />
       <button type="button" class="pw-toggle" id="pw-toggle" aria-label="Show password"></button>
     </div>
+    <input type="hidden" name="next" id="next-field" />
     <button type="submit" class="submit">Unlock</button>
   </form>
 <script>
   // Show the error banner when the login API bounces back with ?e=1
   if (new URLSearchParams(location.search).get('e')) document.getElementById('err').style.display='block';
+
+  // Carry the originally-requested page (?next=…) through login so we return there.
+  var _nx = new URLSearchParams(location.search).get('next');
+  if (_nx) document.getElementById('next-field').value = _nx;
 
   // Show / hide password eye toggle
   var pw = document.getElementById('pw'), tog = document.getElementById('pw-toggle');

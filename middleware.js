@@ -28,5 +28,13 @@ export default function middleware(request) {
   if (secret && token && token === secret) {
     return; // authenticated — let the request through
   }
-  return Response.redirect(new URL('/login.html', request.url), 302);
+  // Not authenticated → send to login, but remember where they were headed so
+  // login can return them there (deep-link sharing). Skip the bare root.
+  const url = new URL(request.url);
+  const loginUrl = new URL('/login.html', request.url);
+  const dest = url.pathname + url.search;
+  if (dest && dest !== '/' && !dest.startsWith('/login.html')) {
+    loginUrl.searchParams.set('next', dest);
+  }
+  return Response.redirect(loginUrl, 302);
 }
